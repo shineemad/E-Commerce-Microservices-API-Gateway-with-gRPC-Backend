@@ -6,9 +6,11 @@ import (
 	"log"
 	"net"
 	"sync"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 
 	pb "example.com/grpcpb/auth"
@@ -61,13 +63,30 @@ func (s *authServer) ValidateToken(_ context.Context, req *pb.ValidateTokenReque
 	return &pb.ValidateTokenResponse{Valid: true, UserId: "user-" + uname}, nil
 }
 
+func loggingInterceptor(
+	ctx context.Context,
+	req interface{},
+	info *grpc.UnaryServerInfo,
+	handler grpc.UnaryHandler,
+) (interface{}, error) {
+	start := time.Now()
+	resp, err := handler(ctx, req)
+	st := "OK"
+	if err != nil {
+		st = "ERROR"
+	}
+	log.Printf("[grpc] method=%s duration=%v status=%s", info.FullMethod, time.Since(start), st)
+	return resp, err
+}
+
 func main() {
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatalf("listen: %v", err)
 	}
-	s := grpc.NewServer()
+	s := grpc.NewServer(grpc.UnaryInterceptor(loggingInterceptor))
 	pb.RegisterAuthServiceServer(s, newAuthServer())
+	reflection.Register(s)
 	log.Println("Auth Service  ->  :50051")
 	log.Fatal(s.Serve(lis))
 }

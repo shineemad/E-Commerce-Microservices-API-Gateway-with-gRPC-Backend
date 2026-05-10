@@ -6,6 +6,7 @@ service OrderService {
   rpc CreateOrder (CreateOrderRequest) returns (Order);
   rpc GetOrder    (GetOrderRequest)    returns (Order);
   rpc ListOrders  (ListOrdersRequest)  returns (ListOrdersResponse);
+  rpc UpdateOrderStatus (UpdateOrderStatusRequest) returns (Order);
 }
 
 message CreateOrderRequest {
@@ -15,6 +16,7 @@ message CreateOrderRequest {
 message GetOrderRequest    { string id      = 1; }
 message ListOrdersRequest  { string user_id = 1; }
 message ListOrdersResponse { repeated Order orders = 1; }
+message UpdateOrderStatusRequest { string id = 1; string status = 2; }
 message Order {
   string id = 1; string user_id = 2; string product_id = 3;
   int32  quantity = 4; string status = 5; double total_price = 6;

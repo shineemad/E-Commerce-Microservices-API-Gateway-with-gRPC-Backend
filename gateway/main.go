@@ -3,14 +3,19 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/grpc/status"
 
 	authpb    "example.com/grpcpb/auth"
 	orderpb   "example.com/grpcpb/order"
@@ -39,6 +44,29 @@ func writeError(w http.ResponseWriter, code int, msg string) {
 
 func newCtx() (context.Context, context.CancelFunc) {
 	return context.WithTimeout(context.Background(), 5*time.Second)
+}
+
+func authMiddleware(ac authpb.AuthServiceClient, next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		authorization := r.Header.Get("Authorization")
+		if authorization == "" {
+			writeError(w, http.StatusUnauthorized, "missing token")
+			return
+		}
+		token := strings.TrimPrefix(authorization, "Bearer ")
+		if token == authorization || token == "" {
+			writeError(w, http.StatusUnauthorized, "invalid token")
+			return
+		}
+		ctx, cancel := newCtx()
+		defer cancel()
+		resp, err := ac.ValidateToken(ctx, &authpb.ValidateTokenRequest{Token: token})
+		if err != nil || !resp.Valid {
+			writeError(w, http.StatusUnauthorized, "invalid token")
+			return
+		}
+		next(w, r)
+	}
 }
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -113,6 +141,65 @@ func handleCreateProduct(c productpb.ProductServiceClient) http.HandlerFunc {
 	}
 }
 
+func handleUpdateProduct(c productpb.ProductServiceClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var b struct {
+			Name        string  `json:"name"`
+			Price       float64 `json:"price"`
+			Description string  `json:"description"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
+			writeError(w, http.StatusBadRequest, "invalid JSON"); return
+		}
+		ctx, cancel := newCtx(); defer cancel()
+		resp, err := c.UpdateProduct(ctx, &productpb.UpdateProductRequest{Id: r.PathValue("id"), Name: b.Name, Price: b.Price, Description: b.Description})
+		if err != nil { writeError(w, http.StatusNotFound, err.Error()); return }
+		writeProto(w, http.StatusOK, resp)
+	}
+}
+
+func handleDeleteProduct(c productpb.ProductServiceClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx, cancel := newCtx(); defer cancel()
+		resp, err := c.DeleteProduct(ctx, &productpb.DeleteProductRequest{Id: r.PathValue("id")})
+		if err != nil { writeError(w, http.StatusNotFound, err.Error()); return }
+		writeProto(w, http.StatusOK, resp)
+	}
+}
+
+func handleStreamProducts(c productpb.ProductServiceClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		stream, err := c.StreamProducts(ctx, &productpb.ListProductsRequest{})
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		results := make([]json.RawMessage, 0)
+		for {
+			item, recvErr := stream.Recv()
+			if recvErr == io.EOF {
+				break
+			}
+			if recvErr != nil {
+				writeError(w, http.StatusInternalServerError, recvErr.Error())
+				return
+			}
+			b, marshalErr := pj.Marshal(item)
+			if marshalErr != nil {
+				writeError(w, http.StatusInternalServerError, marshalErr.Error())
+				return
+			}
+			results = append(results, b)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(results); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+		}
+	}
+}
+
 // ── Orders ────────────────────────────────────────────────────────────────────
 
 func handleCreateOrder(c orderpb.OrderServiceClient) http.HandlerFunc {
@@ -135,6 +222,21 @@ func handleCreateOrder(c orderpb.OrderServiceClient) http.HandlerFunc {
 	}
 }
 
+func handleUpdateOrderStatus(c orderpb.OrderServiceClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var b struct {
+			Status string `json:"status"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
+			writeError(w, http.StatusBadRequest, "invalid JSON"); return
+		}
+		ctx, cancel := newCtx(); defer cancel()
+		resp, err := c.UpdateOrderStatus(ctx, &orderpb.UpdateOrderStatusRequest{Id: r.PathValue("id"), Status: b.Status})
+		if err != nil { writeError(w, http.StatusNotFound, err.Error()); return }
+		writeProto(w, http.StatusOK, resp)
+	}
+}
+
 func handleGetOrder(c orderpb.OrderServiceClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := newCtx(); defer cancel()
@@ -153,12 +255,49 @@ func handleListOrders(c orderpb.OrderServiceClient) http.HandlerFunc {
 	}
 }
 
+func handleHealth(ac authpb.AuthServiceClient, pc productpb.ProductServiceClient, oc orderpb.OrderServiceClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		isAlive := func(err error) string {
+			if err == nil {
+				return "ok"
+			}
+			if status.Code(err) == codes.Unavailable {
+				return "unreachable"
+			}
+			return "ok"
+		}
+
+		checkCtx := func() (context.Context, context.CancelFunc) {
+			return context.WithTimeout(context.Background(), 3*time.Second)
+		}
+
+		ctx, cancel := checkCtx()
+		_, authErr := ac.ValidateToken(ctx, &authpb.ValidateTokenRequest{Token: ""})
+		cancel()
+
+		ctx, cancel = checkCtx()
+		_, productErr := pc.ListProducts(ctx, &productpb.ListProductsRequest{})
+		cancel()
+
+		ctx, cancel = checkCtx()
+		_, orderErr := oc.ListOrders(ctx, &orderpb.ListOrdersRequest{UserId: ""})
+		cancel()
+
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(map[string]string{
+			"auth":   isAlive(authErr),
+			"product": isAlive(productErr),
+			"order":  isAlive(orderErr),
+		})
+	}
+}
+
 // ── CORS middleware ───────────────────────────────────────────────────────────
 
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
@@ -182,18 +321,28 @@ func main() {
 	oc := orderpb.NewOrderServiceClient(dial("localhost:50053"))
 
 	mux := http.NewServeMux()
+	mux.HandleFunc("GET /health", handleHealth(ac, pc, oc))
 	mux.HandleFunc("POST /auth/register",         handleRegister(ac))
 	mux.HandleFunc("POST /auth/login",             handleLogin(ac))
-	mux.HandleFunc("GET /products",                handleListProducts(pc))
-	mux.HandleFunc("GET /products/{id}",           handleGetProduct(pc))
-	mux.HandleFunc("POST /products",               handleCreateProduct(pc))
-	mux.HandleFunc("POST /orders",                 handleCreateOrder(oc))
-	mux.HandleFunc("GET /orders/{id}",             handleGetOrder(oc))
-	mux.HandleFunc("GET /users/{user_id}/orders",  handleListOrders(oc))
+	mux.HandleFunc("GET /products",                authMiddleware(ac, handleListProducts(pc)))
+	mux.HandleFunc("GET /products/stream",         authMiddleware(ac, handleStreamProducts(pc)))
+	mux.HandleFunc("GET /products/{id}",           authMiddleware(ac, handleGetProduct(pc)))
+	mux.HandleFunc("POST /products",               authMiddleware(ac, handleCreateProduct(pc)))
+	mux.HandleFunc("PUT /products/{id}",            authMiddleware(ac, handleUpdateProduct(pc)))
+	mux.HandleFunc("DELETE /products/{id}",         authMiddleware(ac, handleDeleteProduct(pc)))
+	mux.HandleFunc("POST /orders",                 authMiddleware(ac, handleCreateOrder(oc)))
+	mux.HandleFunc("GET /orders/{id}",             authMiddleware(ac, handleGetOrder(oc)))
+	mux.HandleFunc("PATCH /orders/{id}/status",    authMiddleware(ac, handleUpdateOrderStatus(oc)))
+	mux.HandleFunc("GET /users/{user_id}/orders",  authMiddleware(ac, handleListOrders(oc)))
 
 	// Serve frontend static files from ../frontend/
 	frontendDir := "../frontend"
-	mux.Handle("GET /", http.FileServer(http.Dir(frontendDir)))
+	if _, err := os.Stat(frontendDir); err == nil {
+		mux.Handle("GET /", http.FileServer(http.Dir(frontendDir)))
+		log.Printf("Frontend serving from: %s", frontendDir)
+	} else {
+		log.Printf("Warning: frontend directory not found at %s", frontendDir)
+	}
 
 	log.Println("API Gateway -> http://localhost:8080")
 	log.Println("  Frontend  -> http://localhost:8080  (open in browser)")

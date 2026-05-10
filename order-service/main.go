@@ -9,6 +9,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 
 	pb "example.com/grpcpb/order"
@@ -65,6 +66,17 @@ func (s *orderServer) ListOrders(_ context.Context, req *pb.ListOrdersRequest) (
 	return &pb.ListOrdersResponse{Orders: list}, nil
 }
 
+func (s *orderServer) UpdateOrderStatus(_ context.Context, req *pb.UpdateOrderStatusRequest) (*pb.Order, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	o, ok := s.orders[req.Id]
+	if !ok {
+		return nil, status.Errorf(codes.NotFound, "order %q not found", req.Id)
+	}
+	o.Status = req.Status
+	return o, nil
+}
+
 func main() {
 	lis, err := net.Listen("tcp", ":50053")
 	if err != nil {
@@ -72,6 +84,7 @@ func main() {
 	}
 	s := grpc.NewServer()
 	pb.RegisterOrderServiceServer(s, newOrderServer())
+	reflection.Register(s)
 	log.Println("Order Service  ->  :50053")
 	log.Fatal(s.Serve(lis))
 }
