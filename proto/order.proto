@@ -1,0 +1,21 @@
+syntax = "proto3";
+package order;
+option go_package = "example.com/grpcpb/order;order";
+
+service OrderService {
+  rpc CreateOrder (CreateOrderRequest) returns (Order);
+  rpc GetOrder    (GetOrderRequest)    returns (Order);
+  rpc ListOrders  (ListOrdersRequest)  returns (ListOrdersResponse);
+}
+
+message CreateOrderRequest {
+  string user_id    = 1; string product_id = 2;
+  int32  quantity   = 3; double unit_price = 4;
+}
+message GetOrderRequest    { string id      = 1; }
+message ListOrdersRequest  { string user_id = 1; }
+message ListOrdersResponse { repeated Order orders = 1; }
+message Order {
+  string id = 1; string user_id = 2; string product_id = 3;
+  int32  quantity = 4; string status = 5; double total_price = 6;
+}

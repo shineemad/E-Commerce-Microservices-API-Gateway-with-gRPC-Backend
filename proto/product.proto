@@ -1,0 +1,17 @@
+syntax = "proto3";
+package product;
+option go_package = "example.com/grpcpb/product;product";
+
+service ProductService {
+  rpc GetProduct    (GetProductRequest)    returns (Product);
+  rpc ListProducts  (ListProductsRequest)  returns (ListProductsResponse);
+  rpc CreateProduct (CreateProductRequest) returns (Product);
+}
+
+message GetProductRequest    { string id = 1; }
+message ListProductsRequest  {}
+message ListProductsResponse { repeated Product products = 1; }
+message CreateProductRequest { string name = 1; double price = 2; string description = 3; }
+message Product {
+  string id = 1; string name = 2; double price = 3; string description = 4;
+}
