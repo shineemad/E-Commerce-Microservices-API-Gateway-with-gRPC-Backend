@@ -6,9 +6,11 @@ import (
 	"log"
 	"net"
 	"sync"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 
 	pb "example.com/grpcpb/product"
@@ -59,6 +61,47 @@ func (s *productServer) CreateProduct(_ context.Context, req *pb.CreateProductRe
 	return p, nil
 }
 
+func (s *productServer) UpdateProduct(_ context.Context, req *pb.UpdateProductRequest) (*pb.Product, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	p, ok := s.items[req.Id]
+	if !ok {
+		return nil, status.Errorf(codes.NotFound, "product %q not found", req.Id)
+	}
+	if req.Name != "" {
+		p.Name = req.Name
+	}
+	if req.Price != 0 {
+		p.Price = req.Price
+	}
+	if req.Description != "" {
+		p.Description = req.Description
+	}
+	return p, nil
+}
+
+func (s *productServer) DeleteProduct(_ context.Context, req *pb.DeleteProductRequest) (*pb.DeleteProductResponse, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if _, ok := s.items[req.Id]; !ok {
+		return nil, status.Errorf(codes.NotFound, "product %q not found", req.Id)
+	}
+	delete(s.items, req.Id)
+	return &pb.DeleteProductResponse{Success: true}, nil
+}
+
+func (s *productServer) StreamProducts(_ *pb.ListProductsRequest, stream pb.ProductService_StreamProductsServer) error {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	for _, p := range s.items {
+		if err := stream.Send(p); err != nil {
+			return err
+		}
+		time.Sleep(300 * time.Millisecond)
+	}
+	return nil
+}
+
 func main() {
 	lis, err := net.Listen("tcp", ":50052")
 	if err != nil {
@@ -66,6 +109,7 @@ func main() {
 	}
 	s := grpc.NewServer()
 	pb.RegisterProductServiceServer(s, newProductServer())
+	reflection.Register(s)
 	log.Println("Product Service  ->  :50052")
 	log.Fatal(s.Serve(lis))
 }
