@@ -102,12 +102,28 @@ func (s *productServer) StreamProducts(_ *pb.ListProductsRequest, stream pb.Prod
 	return nil
 }
 
+func loggingInterceptor(
+	ctx context.Context,
+	req interface{},
+	info *grpc.UnaryServerInfo,
+	handler grpc.UnaryHandler,
+) (interface{}, error) {
+	start := time.Now()
+	resp, err := handler(ctx, req)
+	st := "OK"
+	if err != nil {
+		st = "ERROR"
+	}
+	log.Printf("[grpc] method=%s duration=%v status=%s", info.FullMethod, time.Since(start), st)
+	return resp, err
+}
+
 func main() {
 	lis, err := net.Listen("tcp", ":50052")
 	if err != nil {
 		log.Fatalf("listen: %v", err)
 	}
-	s := grpc.NewServer()
+	s := grpc.NewServer(grpc.UnaryInterceptor(loggingInterceptor))
 	pb.RegisterProductServiceServer(s, newProductServer())
 	reflection.Register(s)
 	log.Println("Product Service  ->  :50052")
