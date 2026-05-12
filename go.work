@@ -6,4 +6,5 @@ use (
 	./order-service
 	./pb
 	./product-service
+	./runner
 )
