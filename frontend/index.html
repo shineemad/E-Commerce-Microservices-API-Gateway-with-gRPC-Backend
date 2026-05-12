@@ -1470,7 +1470,7 @@
 
     <script>
       "use strict";
-      const BASE = "http://localhost:8080";
+      const BASE = window.location.origin;
 
       const S = {
         token: sessionStorage.getItem("v_tok") || null,

@@ -31,8 +31,8 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 
-	authpb    "example.com/grpcpb/auth"
-	orderpb   "example.com/grpcpb/order"
+	authpb "example.com/grpcpb/auth"
+	orderpb "example.com/grpcpb/order"
 	productpb "example.com/grpcpb/product"
 )
 
@@ -620,6 +620,23 @@ func startGateway() {
 	}
 
 	log.Println("[gateway] API Gateway  ->  http://localhost:8080")
+
+	// Tampilkan IP jaringan agar mudah diakses dari perangkat lain
+	if ifaces, err := net.Interfaces(); err == nil {
+		for _, iface := range ifaces {
+			if iface.Flags&net.FlagUp == 0 || iface.Flags&net.FlagLoopback != 0 {
+				continue
+			}
+			if addrs, err := iface.Addrs(); err == nil {
+				for _, addr := range addrs {
+					if ipnet, ok := addr.(*net.IPNet); ok && ipnet.IP.To4() != nil {
+						log.Printf("[gateway] Network access -> http://%s:8080", ipnet.IP)
+					}
+				}
+			}
+		}
+	}
+
 	if err := http.ListenAndServe(":8080", corsMiddleware(mux)); err != nil {
 		log.Fatalf("[gateway] serve: %v", err)
 	}
