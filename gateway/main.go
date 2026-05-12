@@ -11,14 +11,14 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
-	"google.golang.org/grpc/status"
 
-	authpb    "example.com/grpcpb/auth"
-	orderpb   "example.com/grpcpb/order"
+	authpb "example.com/grpcpb/auth"
+	orderpb "example.com/grpcpb/order"
 	productpb "example.com/grpcpb/product"
 )
 
@@ -298,7 +298,7 @@ func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return
@@ -344,11 +344,6 @@ func main() {
 		log.Printf("Warning: frontend directory not found at %s", frontendDir)
 	}
 
-	log.Println("API Gateway -> http://localhost:8080")
-	log.Println("  Frontend  -> http://localhost:8080  (open in browser)")
-	log.Println("  POST /auth/register | POST /auth/login")
-	log.Println("  GET|POST /products  | GET /products/{id}")
-	log.Println("  POST /orders        | GET /orders/{id}")
-	log.Println("  GET /users/{user_id}/orders")
+	log.Println("API Gateway  ->  :8080")
 	log.Fatal(http.ListenAndServe(":8080", corsMiddleware(mux)))
 }

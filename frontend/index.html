@@ -1540,6 +1540,9 @@
           method,
           headers: { "Content-Type": "application/json" },
         };
+        if (S.token) {
+          opts.headers.Authorization = "Bearer " + S.token;
+        }
         if (body !== undefined) opts.body = JSON.stringify(body);
         const res = await fetch(BASE + path, opts);
         const text = await res.text();
