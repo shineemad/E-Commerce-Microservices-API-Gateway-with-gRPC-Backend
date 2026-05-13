@@ -24,7 +24,74 @@ type orderServer struct {
 }
 
 func newOrderServer() *orderServer {
-	return &orderServer{orders: make(map[string]*pb.Order)}
+	s := &orderServer{orders: make(map[string]*pb.Order)}
+
+	seeds := []*pb.Order{
+		{
+			Id:         "order-1",
+			UserId:     "user-1",
+			ProductId:  "prod-1",
+			Quantity:   1,
+			Status:     "delivered",
+			TotalPrice: 18999999,
+		},
+		{
+			Id:         "order-2",
+			UserId:     "user-1",
+			ProductId:  "prod-2",
+			Quantity:   2,
+			Status:     "delivered",
+			TotalPrice: 1798000,
+		},
+		{
+			Id:         "order-3",
+			UserId:     "user-2",
+			ProductId:  "prod-9",
+			Quantity:   1,
+			Status:     "shipped",
+			TotalPrice: 13999000,
+		},
+		{
+			Id:         "order-4",
+			UserId:     "user-2",
+			ProductId:  "prod-13",
+			Quantity:   1,
+			Status:     "processing",
+			TotalPrice: 3499000,
+		},
+		{
+			Id:         "order-5",
+			UserId:     "user-3",
+			ProductId:  "prod-4",
+			Quantity:   1,
+			Status:     "pending",
+			TotalPrice: 4200000,
+		},
+		{
+			Id:         "order-6",
+			UserId:     "user-3",
+			ProductId:  "prod-17",
+			Quantity:   3,
+			Status:     "pending",
+			TotalPrice: 1350000,
+		},
+		{
+			Id:         "order-7",
+			UserId:     "user-1",
+			ProductId:  "prod-15",
+			Quantity:   1,
+			Status:     "cancelled",
+			TotalPrice: 4999000,
+		},
+	}
+
+	for _, o := range seeds {
+		s.orders[o.Id] = o
+	}
+	s.counter = len(seeds)
+
+	log.Printf("[order] seeded %d orders", len(seeds))
+	return s
 }
 
 func (s *orderServer) CreateOrder(_ context.Context, req *pb.CreateOrderRequest) (*pb.Order, error) {
@@ -41,7 +108,8 @@ func (s *orderServer) CreateOrder(_ context.Context, req *pb.CreateOrderRequest)
 		TotalPrice: req.UnitPrice * float64(req.Quantity),
 	}
 	s.orders[id] = o
-	log.Printf("[order] created id=%s user=%s product=%s qty=%d", id, req.UserId, req.ProductId, req.Quantity)
+	log.Printf("[order] created id=%s user=%s product=%s qty=%d total=%.2f",
+		id, req.UserId, req.ProductId, req.Quantity, o.TotalPrice)
 	return o, nil
 }
 
@@ -74,7 +142,33 @@ func (s *orderServer) UpdateOrderStatus(_ context.Context, req *pb.UpdateOrderSt
 	if !ok {
 		return nil, status.Errorf(codes.NotFound, "order %q not found", req.Id)
 	}
+
+	// Validasi transisi status yang diizinkan
+	allowed := map[string][]string{
+		"pending":    {"processing", "cancelled"},
+		"processing": {"shipped", "cancelled"},
+		"shipped":    {"delivered"},
+		"delivered":  {},
+		"cancelled":  {},
+	}
+	validNext, exists := allowed[o.Status]
+	if !exists {
+		return nil, status.Errorf(codes.InvalidArgument, "unknown current status %q", o.Status)
+	}
+	ok = false
+	for _, next := range validNext {
+		if next == req.Status {
+			ok = true
+			break
+		}
+	}
+	if !ok {
+		return nil, status.Errorf(codes.FailedPrecondition,
+			"cannot transition order from %q to %q", o.Status, req.Status)
+	}
+
 	o.Status = req.Status
+	log.Printf("[order] status updated id=%s status=%s", o.Id, o.Status)
 	return o, nil
 }
 
