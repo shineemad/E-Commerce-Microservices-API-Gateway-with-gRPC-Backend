@@ -23,8 +23,24 @@ type authServer struct {
 	tokens map[string]string // token    -> username
 }
 
+// demoAccounts holds pre-seeded credentials for demo/testing purposes.
+// These accounts are always available even after service restart.
+var demoAccounts = map[string]string{
+	"pembeli": "pembeli123",
+	"penjual": "penjual123",
+}
+
 func newAuthServer() *authServer {
-	return &authServer{users: make(map[string]string), tokens: make(map[string]string)}
+	s := &authServer{
+		users:  make(map[string]string),
+		tokens: make(map[string]string),
+	}
+	// Pre-seed demo accounts
+	for uname, pass := range demoAccounts {
+		s.users[uname] = pass
+		log.Printf("[auth] pre-seeded demo account: %s", uname)
+	}
+	return s
 }
 
 func (s *authServer) Register(_ context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {

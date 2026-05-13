@@ -68,7 +68,16 @@ type authServer struct {
 }
 
 func newAuthServer() *authServer {
-	return &authServer{users: make(map[string]string), tokens: make(map[string]string)}
+	s := &authServer{
+		users:  make(map[string]string),
+		tokens: make(map[string]string),
+	}
+	// Pre-seed demo accounts
+	s.users["pembeli"] = "pembeli123"
+	s.users["penjual"] = "penjual123"
+	s.tokens["tok-pembeli"] = "pembeli"
+	s.tokens["tok-penjual"] = "penjual"
+	return s
 }
 
 func (s *authServer) Register(_ context.Context, req *authpb.RegisterRequest) (*authpb.RegisterResponse, error) {
@@ -536,6 +545,16 @@ func handleListOrders(c orderpb.OrderServiceClient) http.HandlerFunc {
 	}
 }
 
+// handleListAllOrders — mengembalikan semua pesanan (tanpa filter user), dipakai seller
+func handleListAllOrders(c orderpb.OrderServiceClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx, cancel := newCtx(); defer cancel()
+		resp, err := c.ListOrders(ctx, &orderpb.ListOrdersRequest{UserId: ""})
+		if err != nil { writeError(w, http.StatusInternalServerError, err.Error()); return }
+		writeProto(w, http.StatusOK, resp)
+	}
+}
+
 func handleHealth(ac authpb.AuthServiceClient, pc productpb.ProductServiceClient, oc orderpb.OrderServiceClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		isAlive := func(err error) string {
@@ -610,13 +629,31 @@ func startGateway() {
 	mux.HandleFunc("POST /orders",                  authMiddleware(ac, handleCreateOrder(oc)))
 	mux.HandleFunc("GET /orders/{id}",              authMiddleware(ac, handleGetOrder(oc)))
 	mux.HandleFunc("PATCH /orders/{id}/status",     authMiddleware(ac, handleUpdateOrderStatus(oc)))
+	mux.HandleFunc("GET /orders",                   authMiddleware(ac, handleListAllOrders(oc)))
 	mux.HandleFunc("GET /users/{user_id}/orders",   authMiddleware(ac, handleListOrders(oc)))
 
-	// Serve frontend dari folder ../frontend
-	frontendDir := "../frontend"
+	// Serve frontend — path relatif terhadap CWD saat `go run ./runner` dijalankan
+	// dari project root (C:\...\grpc-gateway) -> ./frontend
+	// Fallback ke ../frontend jika dijalankan dari dalam folder runner/
+	frontendDir := "./frontend"
+	if _, err := os.Stat(frontendDir); err != nil {
+		frontendDir = "../frontend"
+	}
 	if _, err := os.Stat(frontendDir); err == nil {
-		mux.Handle("GET /", http.FileServer(http.Dir(frontendDir)))
+		// Wrap FileServer agar SPA (Single Page App) selalu kembali ke index.html
+		fs := http.FileServer(http.Dir(frontendDir))
+		mux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// Jika file fisik tidak ada, sajikan index.html
+			path := frontendDir + r.URL.Path
+			if _, err := os.Stat(path); os.IsNotExist(err) {
+				http.ServeFile(w, r, frontendDir+"/index.html")
+				return
+			}
+			fs.ServeHTTP(w, r)
+		}))
 		log.Printf("[gateway] Frontend serving from: %s", frontendDir)
+	} else {
+		log.Printf("[gateway] Warning: frontend directory not found (tried ./frontend and ../frontend)")
 	}
 
 	log.Println("[gateway] API Gateway  ->  http://localhost:8080")
@@ -646,10 +683,38 @@ func startGateway() {
 // Main — jalankan semua service secara concurrent
 // ══════════════════════════════════════════════════════════════════════════════
 
+// checkPortsFree memeriksa apakah semua port yang dibutuhkan tersedia.
+// Jika ada yang masih dipakai proses lain, cetak pesan bantuan dan exit.
+func checkPortsFree(ports []int) {
+	var busy []int
+	for _, port := range ports {
+		addr := fmt.Sprintf(":%d", port)
+		l, err := net.Listen("tcp", addr)
+		if err != nil {
+			busy = append(busy, port)
+		} else {
+			l.Close()
+		}
+	}
+	if len(busy) == 0 {
+		return
+	}
+	log.Printf("ERROR: Port berikut masih dipakai proses lain: %v", busy)
+	log.Println("──────────────────────────────────────────────────────")
+	log.Println("Jalankan perintah berikut di PowerShell untuk menghentikannya:")
+	log.Println("  Get-Process -Name go,runner -ErrorAction SilentlyContinue | Stop-Process -Force")
+	log.Println("Kemudian jalankan ulang:")
+	log.Println("  go run ./runner")
+	log.Println("──────────────────────────────────────────────────────")
+	os.Exit(1)
+}
+
 func main() {
 	log.Println("╔══════════════════════════════════════════╗")
 	log.Println("║  gRPC Gateway — All Services Starting   ║")
 	log.Println("╚══════════════════════════════════════════╝")
+
+	checkPortsFree([]int{50051, 50052, 50053, 8080})
 
 	go startAuthService()
 	go startProductService()

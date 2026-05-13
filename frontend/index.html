@@ -3,1305 +3,303 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VAULT — Premium Tech</title>
+    <title>ShopGo — Belanja Lebih Mudah</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,400&display=swap"
       rel="stylesheet"
     />
-
-    <style>
-      :root {
-        --bg: #f7f4ef;
-        --bg-card: #ffffff;
-        --txt: #111009;
-        --txt-dim: #7a6e63;
-        --txt-muted: #c0b4a4;
-        --accent: #9d4b1a;
-        --accent-lt: rgba(157, 75, 26, 0.08);
-        --accent-bd: rgba(157, 75, 26, 0.2);
-        --ok: #1a7a3c;
-        --ok-bg: rgba(26, 122, 60, 0.08);
-        --border: #e5dfda;
-        --border-hi: #cfc7bc;
-        --shadow-sm:
-          0 1px 3px rgba(17, 16, 9, 0.05), 0 1px 2px rgba(17, 16, 9, 0.04);
-        --shadow-md:
-          0 4px 16px rgba(17, 16, 9, 0.08), 0 2px 6px rgba(17, 16, 9, 0.05);
-        --shadow-lg:
-          0 16px 48px rgba(17, 16, 9, 0.12), 0 4px 16px rgba(17, 16, 9, 0.07);
-        --r: 5px;
-        --r-lg: 10px;
-        --nav-h: 66px;
-        --serif: "Cormorant Garamond", Georgia, serif;
-        --ui: "Outfit", sans-serif;
-        --mono: "DM Mono", monospace;
-      }
-
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      html {
-        font-size: 15px;
-        scroll-behavior: smooth;
-      }
-      body {
-        font-family: var(--ui);
-        background: var(--bg);
-        color: var(--txt);
-        line-height: 1.6;
-        min-height: 100vh;
-        -webkit-font-smoothing: antialiased;
-      }
-
-      /* ═══════════════════════════════════
-       PAGE SYSTEM
-    ═══════════════════════════════════ */
-      .page {
-        display: none;
-      }
-      .page.active {
-        display: block;
-        animation: fadeUp 0.28s ease;
-      }
-      .inner-page {
-        display: none;
-        padding-top: var(--nav-h);
-        min-height: 100vh;
-      }
-      .inner-page.active {
-        display: block;
-        animation: fadeUp 0.28s ease;
-      }
-      @keyframes fadeUp {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* ═══════════════════════════════════
-       AUTH PAGE
-    ═══════════════════════════════════ */
-      .auth-wrap {
-        min-height: 100vh;
-        display: grid;
-        grid-template-columns: 1.1fr 1fr;
-      }
-
-      .auth-hero {
-        background: var(--txt);
-        padding: 56px 60px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        position: relative;
-        overflow: hidden;
-      }
-      .auth-hero::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background-image:
-          linear-gradient(rgba(247, 244, 239, 0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(247, 244, 239, 0.03) 1px, transparent 1px);
-        background-size: 44px 44px;
-        pointer-events: none;
-      }
-      .auth-hero::after {
-        content: "";
-        position: absolute;
-        top: 44px;
-        right: 44px;
-        width: 72px;
-        height: 72px;
-        border-top: 1px solid rgba(247, 244, 239, 0.12);
-        border-right: 1px solid rgba(247, 244, 239, 0.12);
-      }
-      .hz {
-        position: relative;
-        z-index: 1;
-      }
-
-      .hero-wordmark {
-        font-family: var(--serif);
-        font-size: 26px;
-        font-weight: 600;
-        letter-spacing: 0.14em;
-        color: var(--bg);
-      }
-      .hero-sub-lbl {
-        font-family: var(--mono);
-        font-size: 9.5px;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: rgba(247, 244, 239, 0.28);
-        margin-top: 8px;
-      }
-      .hero-headline {
-        font-family: var(--serif);
-        font-size: 64px;
-        font-weight: 300;
-        line-height: 1.06;
-        letter-spacing: -0.025em;
-        color: var(--bg);
-        margin-bottom: 22px;
-      }
-      .hero-headline em {
-        font-style: italic;
-        color: rgba(247, 244, 239, 0.42);
-      }
-      .hero-copy {
-        font-size: 13.5px;
-        color: rgba(247, 244, 239, 0.36);
-        max-width: 290px;
-        line-height: 1.75;
-      }
-      .hero-stats {
-        display: flex;
-        gap: 40px;
-      }
-      .hs-n {
-        font-family: var(--serif);
-        font-size: 30px;
-        font-weight: 300;
-        color: rgba(247, 244, 239, 0.65);
-      }
-      .hs-l {
-        font-family: var(--mono);
-        font-size: 8.5px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        color: rgba(247, 244, 239, 0.22);
-        margin-top: 3px;
-      }
-
-      .auth-form-side {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 60px 56px;
-        background: var(--bg);
-      }
-      .auth-box {
-        width: 100%;
-        max-width: 360px;
-      }
-
-      .auth-tabs {
-        display: flex;
-        border-bottom: 1px solid var(--border);
-        margin-bottom: 38px;
-      }
-      .auth-tab {
-        padding: 0 0 14px;
-        margin-right: 28px;
-        margin-bottom: -1px;
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--txt-muted);
-        cursor: pointer;
-        border-bottom: 2px solid transparent;
-        transition: all 0.18s;
-      }
-      .auth-tab.on {
-        color: var(--txt);
-        border-bottom-color: var(--accent);
-      }
-
-      .auth-heading {
-        font-family: var(--serif);
-        font-size: 34px;
-        font-weight: 400;
-        letter-spacing: -0.02em;
-        margin-bottom: 6px;
-      }
-      .auth-desc {
-        font-size: 13px;
-        color: var(--txt-dim);
-        margin-bottom: 30px;
-      }
-
-      .subform {
-        display: none;
-      }
-      .subform.on {
-        display: block;
-        animation: fadeUp 0.2s ease;
-      }
-
-      .fg {
-        margin-bottom: 16px;
-      }
-      label {
-        display: block;
-        font-family: var(--mono);
-        font-size: 9.5px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--txt-dim);
-        margin-bottom: 6px;
-      }
-      input {
-        width: 100%;
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--r);
-        color: var(--txt);
-        font-family: var(--ui);
-        font-size: 14px;
-        padding: 11px 14px;
-        outline: none;
-        transition:
-          border-color 0.18s,
-          box-shadow 0.18s;
-      }
-      input:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px var(--accent-lt);
-      }
-      input::placeholder {
-        color: var(--txt-muted);
-      }
-
-      .field-err {
-        font-size: 11.5px;
-        color: #c0392b;
-        margin-top: 10px;
-        display: none;
-      }
-      .field-err.on {
-        display: block;
-      }
-
-      /* ═══════════════════════════════════
-       BUTTONS
-    ═══════════════════════════════════ */
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        font-family: var(--ui);
-        font-size: 13px;
-        font-weight: 600;
-        letter-spacing: 0.03em;
-        border: none;
-        border-radius: var(--r);
-        cursor: pointer;
-        padding: 12px 20px;
-        transition: all 0.18s ease;
-      }
-      .btn-full {
-        width: 100%;
-      }
-      .btn-primary {
-        background: var(--txt);
-        color: var(--bg);
-      }
-      .btn-primary:hover {
-        background: #2a2620;
-        transform: translateY(-1px);
-        box-shadow: var(--shadow-md);
-      }
-      .btn-primary:active {
-        transform: translateY(0);
-      }
-      .btn-accent {
-        background: var(--accent);
-        color: #fff;
-      }
-      .btn-accent:hover {
-        background: #b35518;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 16px rgba(157, 75, 26, 0.28);
-      }
-      .btn-ghost {
-        background: transparent;
-        color: var(--txt-dim);
-        border: 1px solid var(--border);
-      }
-      .btn-ghost:hover {
-        border-color: var(--border-hi);
-        color: var(--txt);
-      }
-      .btn-sm {
-        padding: 8px 14px;
-        font-size: 12px;
-      }
-      .btn-circle {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        padding: 0;
-        font-size: 22px;
-        line-height: 1;
-        background: var(--txt);
-        color: var(--bg);
-      }
-      .btn-circle:hover {
-        background: var(--accent);
-        transform: scale(1.1);
-        box-shadow: 0 4px 12px rgba(157, 75, 26, 0.3);
-      }
-      .btn-circle:active {
-        transform: scale(0.95);
-      }
-
-      .spinner {
-        width: 16px;
-        height: 16px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-top-color: currentColor;
-        border-radius: 50%;
-        animation: spin 0.65s linear infinite;
-        display: inline-block;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      /* ═══════════════════════════════════
-       TOP NAV
-    ═══════════════════════════════════ */
-      .topnav {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: var(--nav-h);
-        background: rgba(247, 244, 239, 0.9);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        border-bottom: 1px solid var(--border);
-        align-items: center;
-        padding: 0 44px;
-        z-index: 100;
-      }
-      .topnav.vis {
-        display: flex;
-      }
-
-      .nav-brand {
-        font-family: var(--serif);
-        font-size: 20px;
-        font-weight: 600;
-        letter-spacing: 0.12em;
-        color: var(--txt);
-        cursor: pointer;
-        flex-shrink: 0;
-        margin-right: 44px;
-      }
-      .nav-links {
-        display: flex;
-        gap: 2px;
-        flex: 1;
-      }
-      .navlink {
-        padding: 7px 14px;
-        border-radius: var(--r);
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--txt-dim);
-        cursor: pointer;
-        transition: all 0.14s;
-      }
-      .navlink:hover {
-        color: var(--txt);
-        background: var(--border);
-      }
-      .navlink.on {
-        color: var(--txt);
-        background: var(--border);
-      }
-
-      .nav-right {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .cart-btn {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        padding: 8px 16px;
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--txt-dim);
-        transition: all 0.15s;
-      }
-      .cart-btn:hover {
-        border-color: var(--border-hi);
-        color: var(--txt);
-        box-shadow: var(--shadow-sm);
-      }
-
-      .cart-badge {
-        display: none;
-        min-width: 18px;
-        height: 18px;
-        padding: 0 5px;
-        background: var(--accent);
-        color: #fff;
-        border-radius: 999px;
-        font-family: var(--mono);
-        font-size: 9px;
-        align-items: center;
-        justify-content: center;
-        animation: popIn 0.18s ease;
-      }
-      .cart-badge.vis {
-        display: flex;
-      }
-      @keyframes popIn {
-        0% {
-          transform: scale(0);
-        }
-        70% {
-          transform: scale(1.2);
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
-
-      .user-chip {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 5px 12px 5px 5px;
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        font-size: 12px;
-        color: var(--txt-dim);
-      }
-      .user-avatar {
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        background: var(--txt);
-        color: var(--bg);
-        font-family: var(--mono);
-        font-size: 11px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-      }
-      .signout {
-        padding: 7px 12px;
-        font-size: 12px;
-        color: var(--txt-muted);
-        cursor: pointer;
-        border-radius: var(--r);
-        transition: all 0.14s;
-      }
-      .signout:hover {
-        color: #c0392b;
-        background: rgba(192, 57, 43, 0.07);
-      }
-
-      /* ═══════════════════════════════════
-       STORE PAGE
-    ═══════════════════════════════════ */
-      .store-wrap {
-        max-width: 1140px;
-        margin: 0 auto;
-        padding: 44px 44px 80px;
-      }
-
-      .store-top {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        margin-bottom: 38px;
-      }
-      .store-kicker {
-        font-family: var(--mono);
-        font-size: 10px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        color: var(--txt-muted);
-        margin-bottom: 8px;
-      }
-      .store-title {
-        font-family: var(--serif);
-        font-size: 48px;
-        font-weight: 400;
-        letter-spacing: -0.025em;
-        line-height: 1.08;
-      }
-      .store-title em {
-        font-style: italic;
-        color: var(--txt-dim);
-      }
-
-      .prod-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 22px;
-        margin-bottom: 48px;
-      }
-
-      .prod-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--r-lg);
-        overflow: hidden;
-        box-shadow: var(--shadow-sm);
-        opacity: 0;
-        animation: cardRise 0.38s ease forwards;
-        transition:
-          transform 0.22s ease,
-          box-shadow 0.22s ease,
-          border-color 0.22s ease;
-      }
-      .prod-card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-md);
-        border-color: var(--border-hi);
-      }
-      @keyframes cardRise {
-        from {
-          opacity: 0;
-          transform: translateY(18px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .prod-visual {
-        height: 210px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-      }
-      .prod-emoji {
-        font-size: 60px;
-        filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.12));
-      }
-
-      .grd-0 {
-        background: linear-gradient(135deg, #f0e8dc, #ddd0bc);
-      }
-      .grd-1 {
-        background: linear-gradient(135deg, #dde8f2, #c4d8eb);
-      }
-      .grd-2 {
-        background: linear-gradient(135deg, #e4f0dc, #caded8);
-      }
-      .grd-3 {
-        background: linear-gradient(135deg, #f0e0e8, #e4cede);
-      }
-      .grd-4 {
-        background: linear-gradient(135deg, #e8e0f0, #d0c4e8);
-      }
-      .grd-5 {
-        background: linear-gradient(135deg, #f0eddc, #e0d8c0);
-      }
-
-      .prod-info {
-        padding: 20px 22px 22px;
-        border-top: 1px solid var(--border);
-      }
-      .prod-name {
-        font-family: var(--serif);
-        font-size: 21px;
-        font-weight: 500;
-        letter-spacing: -0.01em;
-        margin-bottom: 4px;
-        line-height: 1.2;
-      }
-      .prod-desc {
-        font-size: 12.5px;
-        color: var(--txt-dim);
-        line-height: 1.55;
-        margin-bottom: 18px;
-        min-height: 38px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
-      .prod-footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .prod-price-lbl {
-        font-family: var(--mono);
-        font-size: 9px;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--txt-muted);
-        margin-bottom: 2px;
-      }
-      .prod-price {
-        font-family: var(--mono);
-        font-size: 19px;
-        font-weight: 400;
-      }
-
-      /* Skeleton */
-      .skel-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 22px;
-      }
-      .skel-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--r-lg);
-        overflow: hidden;
-        animation: pulse 1.5s ease infinite;
-      }
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.5;
-        }
-      }
-      .skel-img {
-        height: 210px;
-        background: var(--border);
-      }
-      .skel-body {
-        padding: 20px 22px 22px;
-      }
-      .skel-line {
-        height: 13px;
-        background: var(--border);
-        border-radius: 3px;
-        margin-bottom: 10px;
-      }
-      .skel-line.w60 {
-        width: 60%;
-      }
-      .skel-line.w40 {
-        width: 40%;
-      }
-
-      /* Add product */
-      .divider {
-        border: none;
-        border-top: 1px solid var(--border);
-        margin: 0 0 36px;
-      }
-      .sect-kicker {
-        font-family: var(--mono);
-        font-size: 9.5px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: var(--txt-muted);
-        margin-bottom: 18px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      .sect-kicker::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: var(--border);
-      }
-      .add-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr auto;
-        gap: 12px;
-        align-items: flex-end;
-      }
-
-      /* ═══════════════════════════════════
-       CART DRAWER
-    ═══════════════════════════════════ */
-      .cart-scrim {
-        position: fixed;
-        inset: 0;
-        background: rgba(17, 16, 9, 0.38);
-        z-index: 200;
-        display: none;
-        opacity: 0;
-        transition: opacity 0.25s;
-      }
-      .cart-scrim.vis {
-        display: block;
-        opacity: 1;
-      }
-
-      .cart-drawer {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: 430px;
-        background: var(--bg);
-        border-left: 1px solid var(--border);
-        box-shadow: var(--shadow-lg);
-        z-index: 201;
-        display: flex;
-        flex-direction: column;
-        transform: translateX(100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      .cart-drawer.vis {
-        transform: translateX(0);
-      }
-
-      .drawer-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 24px 28px;
-        border-bottom: 1px solid var(--border);
-        flex-shrink: 0;
-      }
-      .drawer-title {
-        font-family: var(--serif);
-        font-size: 24px;
-        font-weight: 400;
-      }
-      .close-x {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: var(--border);
-        border: none;
-        cursor: pointer;
-        font-size: 14px;
-        color: var(--txt-dim);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.14s;
-      }
-      .close-x:hover {
-        background: var(--border-hi);
-        color: var(--txt);
-      }
-
-      .drawer-body {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px 28px;
-      }
-
-      .cart-empty-state {
-        text-align: center;
-        padding: 64px 20px;
-        color: var(--txt-muted);
-      }
-      .ce-icon {
-        font-size: 52px;
-        margin-bottom: 16px;
-        opacity: 0.35;
-      }
-      .ce-text {
-        font-size: 14px;
-      }
-
-      .cart-item {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding: 16px 0;
-        border-bottom: 1px solid var(--border);
-        animation: fadeUp 0.18s ease;
-      }
-      .cart-item:last-child {
-        border-bottom: none;
-      }
-      .cart-thumb {
-        width: 62px;
-        height: 62px;
-        border-radius: var(--r);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 26px;
-        flex-shrink: 0;
-        border: 1px solid var(--border);
-      }
-      .cart-item-info {
-        flex: 1;
-        min-width: 0;
-      }
-      .cart-item-name {
-        font-family: var(--serif);
-        font-size: 16px;
-        font-weight: 500;
-        margin-bottom: 2px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .cart-item-price {
-        font-family: var(--mono);
-        font-size: 12px;
-        color: var(--txt-dim);
-      }
-
-      .qty-ctrl {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .qty-btn {
-        width: 26px;
-        height: 26px;
-        border-radius: 50%;
-        background: var(--border);
-        border: none;
-        cursor: pointer;
-        font-size: 15px;
-        color: var(--txt);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.12s;
-      }
-      .qty-btn:hover {
-        background: var(--border-hi);
-      }
-      .qty-n {
-        font-family: var(--mono);
-        font-size: 13px;
-        min-width: 18px;
-        text-align: center;
-      }
-
-      .rm-btn {
-        color: var(--txt-muted);
-        cursor: pointer;
-        font-size: 16px;
-        padding: 4px;
-        border-radius: var(--r);
-        transition: color 0.12s;
-      }
-      .rm-btn:hover {
-        color: #c0392b;
-      }
-
-      .drawer-foot {
-        padding: 20px 28px 28px;
-        border-top: 1px solid var(--border);
-        flex-shrink: 0;
-      }
-      .total-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        margin-bottom: 16px;
-      }
-      .total-lbl {
-        font-family: var(--mono);
-        font-size: 10px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--txt-dim);
-      }
-      .total-amt {
-        font-family: var(--serif);
-        font-size: 30px;
-        font-weight: 400;
-      }
-
-      /* ═══════════════════════════════════
-       CHECKOUT MODAL
-    ═══════════════════════════════════ */
-      .modal-scrim {
-        position: fixed;
-        inset: 0;
-        background: rgba(17, 16, 9, 0.48);
-        z-index: 300;
-        display: none;
-        align-items: center;
-        justify-content: center;
-      }
-      .modal-scrim.vis {
-        display: flex;
-      }
-      .modal {
-        background: var(--bg);
-        border: 1px solid var(--border);
-        border-radius: var(--r-lg);
-        width: 90%;
-        max-width: 540px;
-        box-shadow: var(--shadow-lg);
-        animation: modalIn 0.22s ease;
-      }
-      @keyframes modalIn {
-        from {
-          opacity: 0;
-          transform: scale(0.96) translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1) translateY(0);
-        }
-      }
-      .modal-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 24px 28px;
-        border-bottom: 1px solid var(--border);
-      }
-      .modal-title {
-        font-family: var(--serif);
-        font-size: 24px;
-        font-weight: 400;
-      }
-      .modal-body {
-        padding: 28px;
-      }
-      .modal-foot {
-        padding: 0 28px 28px;
-        display: flex;
-        gap: 10px;
-      }
-
-      .order-summary {
-        background: var(--bg);
-        border: 1px solid var(--border);
-        border-radius: var(--r);
-        padding: 16px;
-        margin-bottom: 20px;
-      }
-      .os-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 13px;
-        padding: 7px 0;
-        border-bottom: 1px dashed var(--border);
-      }
-      .os-row:last-child {
-        border-bottom: none;
-      }
-      .os-name {
-        font-weight: 500;
-      }
-      .os-meta {
-        font-family: var(--mono);
-        font-size: 10.5px;
-        color: var(--txt-dim);
-      }
-      .os-price {
-        font-family: var(--mono);
-        font-size: 13px;
-      }
-      .grand-total {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        margin-top: 18px;
-        padding-top: 18px;
-        border-top: 1px solid var(--border);
-      }
-      .gt-lbl {
-        font-family: var(--mono);
-        font-size: 10px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--txt-dim);
-      }
-      .gt-amt {
-        font-family: var(--serif);
-        font-size: 28px;
-        font-weight: 500;
-      }
-
-      /* ═══════════════════════════════════
-       ORDERS PAGE
-    ═══════════════════════════════════ */
-      .orders-wrap {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 44px 44px 80px;
-      }
-      .orders-title {
-        font-family: var(--serif);
-        font-size: 42px;
-        font-weight: 400;
-        letter-spacing: -0.02em;
-        margin-bottom: 36px;
-      }
-
-      .order-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--r-lg);
-        overflow: hidden;
-        margin-bottom: 16px;
-        box-shadow: var(--shadow-sm);
-        animation: fadeUp 0.22s ease;
-      }
-      .order-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 18px 24px;
-      }
-      .order-id {
-        font-family: var(--mono);
-        font-size: 11px;
-        color: var(--txt-muted);
-        letter-spacing: 0.07em;
-      }
-      .order-badge {
-        font-family: var(--mono);
-        font-size: 9.5px;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        padding: 4px 11px;
-        border-radius: 999px;
-      }
-      .badge-pending {
-        background: var(--accent-lt);
-        color: var(--accent);
-        border: 1px solid var(--accent-bd);
-      }
-      .badge-complete {
-        background: var(--ok-bg);
-        color: var(--ok);
-        border: 1px solid rgba(26, 122, 60, 0.2);
-      }
-
-      .order-body {
-        border-top: 1px solid var(--border);
-        padding: 18px 24px;
-      }
-      .order-row {
-        display: flex;
-        justify-content: space-between;
-        font-size: 13px;
-        margin-bottom: 7px;
-      }
-      .or-lbl {
-        color: var(--txt-dim);
-      }
-      .or-val {
-        font-family: var(--mono);
-        font-size: 12px;
-      }
-      .order-total {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        margin-top: 16px;
-        padding-top: 16px;
-        border-top: 1px solid var(--border);
-      }
-      .ot-lbl {
-        font-family: var(--mono);
-        font-size: 10px;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--txt-dim);
-      }
-      .ot-amt {
-        font-family: var(--serif);
-        font-size: 24px;
-        font-weight: 500;
-      }
-
-      .orders-empty {
-        text-align: center;
-        padding: 80px 20px;
-        color: var(--txt-muted);
-      }
-      .oe-title {
-        font-family: var(--serif);
-        font-size: 30px;
-        font-weight: 300;
-        color: var(--txt-dim);
-        margin-bottom: 8px;
-      }
-      .oe-sub {
-        font-size: 13px;
-      }
-
-      /* ═══════════════════════════════════
-       TOASTS
-    ═══════════════════════════════════ */
-      .toast-wrap {
-        position: fixed;
-        bottom: 26px;
-        right: 26px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        z-index: 999;
-      }
-      .toast {
-        display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        background: var(--txt);
-        color: var(--bg);
-        border-radius: var(--r-lg);
-        padding: 14px 18px;
-        min-width: 220px;
-        box-shadow: var(--shadow-lg);
-        font-size: 13px;
-        line-height: 1.4;
-        animation: toastIn 0.2s ease;
-      }
-      .toast.err {
-        background: #b83030;
-      }
-      @keyframes toastIn {
-        from {
-          opacity: 0;
-          transform: translateX(22px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-      .toast-ico {
-        font-size: 15px;
-        flex-shrink: 0;
-      }
-
-      ::-webkit-scrollbar {
-        width: 4px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: var(--border-hi);
-        border-radius: 2px;
-      }
-    </style>
+    <!-- CSS — split files -->
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/nav.css" />
+    <link rel="stylesheet" href="./css/auth.css" />
+    <link rel="stylesheet" href="./css/components.css" />
+    <link rel="stylesheet" href="./css/store.css" />
+    <link rel="stylesheet" href="./css/pages.css" />
+    <link rel="stylesheet" href="./css/cart.css" />
+    <link rel="stylesheet" href="./css/modals.css" />
+    <link rel="stylesheet" href="./css/responsive.css" />
+    <link rel="stylesheet" href="./css/features.css" />
   </head>
   <body>
     <!-- TOP NAV -->
     <nav class="topnav" id="topnav">
-      <div class="nav-brand" onclick="goPage('store')">VAULT</div>
+      <div class="nav-logo" onclick="goPage('store')">
+        <svg
+          class="nav-logo-icon"
+          width="30"
+          height="30"
+          viewBox="0 0 30 30"
+          fill="none"
+        >
+          <!-- cart handle -->
+          <path
+            d="M3 5.5h3l3 11h10.5a2 2 0 0 0 1.93-1.48L23 8H9"
+            stroke="#1A1A1A"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <!-- "Go" arrow inside basket -->
+          <path
+            d="M14 12l2.5 1.5L14 15"
+            stroke="#1A1A1A"
+            stroke-width="1.7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <!-- wheels -->
+          <circle cx="11" cy="21.5" r="2" fill="#1A1A1A" />
+          <circle cx="19.5" cy="21.5" r="2" fill="#1A1A1A" />
+        </svg>
+        <span class="nav-logo-text">ShopGo</span>
+      </div>
       <div class="nav-links">
         <div class="navlink on" id="nl-store" onclick="goPage('store')">
-          Store
+          Beranda
         </div>
         <div class="navlink" id="nl-orders" onclick="goPage('orders')">
-          My Orders
+          Transaksi
+        </div>
+        <div
+          class="navlink"
+          id="nl-manage"
+          onclick="goPage('manage')"
+          style="display: none"
+        >
+          Toko Saya
         </div>
       </div>
       <div class="nav-right">
-        <button class="cart-btn" onclick="openCart()">
-          <span>🛍</span><span>Cart</span>
-          <span class="cart-badge" id="cart-badge">0</span>
+        <span class="seller-badge" id="seller-badge" style="display: none"
+          >&#x1F3EA; Toko Saya</span
+        >
+        <button
+          class="wish-nav-btn"
+          id="wish-nav-btn"
+          onclick="openWishlist()"
+          title="Wishlist"
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+            />
+          </svg>
+          <span class="wish-count" id="wish-badge" style="display: none"
+            >0</span
+          >
+        </button>
+        <button class="cart-btn" id="cart-btn-top" onclick="openCart()">
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path
+              d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+            />
+          </svg>
+          <span class="cart-lbl">Keranjang</span>
+          <span class="cart-count" id="cart-badge">0</span>
         </button>
         <div class="user-chip">
-          <div class="user-avatar" id="u-avatar">—</div>
-          <span id="u-name">—</span>
+          <div class="user-avatar" id="u-avatar">?</div>
+          <span id="u-name">&mdash;</span>
         </div>
-        <div class="signout" onclick="logout()">Sign out</div>
+        <button class="signout-btn" onclick="logout()">Keluar</button>
       </div>
     </nav>
 
     <!-- AUTH PAGE -->
     <div class="page active" id="page-auth">
-      <div class="auth-wrap">
-        <!-- Hero -->
+      <div class="auth-layout">
         <div class="auth-hero">
-          <div class="hz">
-            <div class="hero-wordmark">VAULT</div>
-            <div class="hero-sub-lbl">
-              Premium Tech Marketplace · gRPC Backend
+          <div class="auth-hero-inner">
+            <div class="auth-brand">
+              <svg width="34" height="34" viewBox="0 0 30 30" fill="none">
+                <!-- cart handle -->
+                <path
+                  d="M3 5.5h3l3 11h10.5a2 2 0 0 0 1.93-1.48L23 8H9"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <!-- "Go" arrow inside basket -->
+                <path
+                  d="M14 12l2.5 1.5L14 15"
+                  stroke="white"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <!-- wheels -->
+                <circle cx="11" cy="21.5" r="2" fill="white" />
+                <circle cx="19.5" cy="21.5" r="2" fill="white" />
+              </svg>
+              <span>ShopGo</span>
+            </div>
+            <div class="auth-hero-display">Tech</div>
+            <div class="auth-hero-tagline">
+              Gadget Terbaik, Harga Terjangkau
+            </div>
+            <p class="auth-subtext">
+              Toko gadget terpercaya — laptop, smartphone, audio, aksesori, dan
+              lainnya. Produk 100% original dengan garansi resmi.
+            </p>
+            <div class="auth-features">
+              <div class="af-item">
+                <div class="af-dot"></div>
+                Produk 100% Original &amp; Bergaransi Resmi
+              </div>
+              <div class="af-item">
+                <div class="af-dot"></div>
+                Pengiriman Cepat ke Seluruh RI
+              </div>
+              <div class="af-item">
+                <div class="af-dot"></div>
+                Harga Kompetitif Dijamin
+              </div>
             </div>
           </div>
-          <div class="hz">
-            <div class="hero-headline">
-              Curated<br /><em>for the</em><br />discerning.
-            </div>
-            <div class="hero-copy">
-              Marketplace teknologi premium yang dibangun di atas arsitektur
-              microservice modern dengan protokol gRPC.
-            </div>
-          </div>
-          <div class="hz">
-            <div class="hero-stats">
-              <div>
-                <div class="hs-n">3</div>
-                <div class="hs-l">Microservices</div>
-              </div>
-              <div>
-                <div class="hs-n">gRPC</div>
-                <div class="hs-l">Protocol</div>
-              </div>
-              <div>
-                <div class="hs-n">Go</div>
-                <div class="hs-l">Backend</div>
-              </div>
-            </div>
+          <div class="auth-hero-deco">
+            <div class="deco-ring deco-r1"></div>
+            <div class="deco-ring deco-r2"></div>
+            <div class="deco-blob"></div>
           </div>
         </div>
-        <!-- Form -->
-        <div class="auth-form-side">
-          <div class="auth-box">
+
+        <div class="auth-form-panel">
+          <div class="auth-form-inner">
+            <div class="auth-form-logo">
+              <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+                <!-- cart handle -->
+                <path
+                  d="M3 5.5h3l3 11h10.5a2 2 0 0 0 1.93-1.48L23 8H9"
+                  stroke="#1A1A1A"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <!-- "Go" arrow inside basket -->
+                <path
+                  d="M14 12l2.5 1.5L14 15"
+                  stroke="#1A1A1A"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <!-- wheels -->
+                <circle cx="11" cy="21.5" r="2" fill="#1A1A1A" />
+                <circle cx="19.5" cy="21.5" r="2" fill="#1A1A1A" />
+              </svg>
+              <span class="afl-text">ShopGo</span>
+            </div>
+
+            <div class="role-section">
+              <div class="role-label-txt">Masuk sebagai:</div>
+              <div class="role-btns">
+                <button
+                  class="role-btn active-buyer"
+                  id="role-buyer"
+                  onclick="selectRole('buyer')"
+                >
+                  <div class="role-ico">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"
+                      />
+                      <line x1="3" y1="6" x2="21" y2="6" />
+                      <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                  </div>
+                  <div class="role-name">Pembeli</div>
+                  <div class="role-hint">Belanja produk</div>
+                </button>
+                <button
+                  class="role-btn"
+                  id="role-seller"
+                  onclick="selectRole('seller')"
+                >
+                  <div class="role-ico">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <rect x="2" y="3" width="20" height="14" rx="2" />
+                      <path d="M8 21h8M12 17v4" />
+                    </svg>
+                  </div>
+                  <div class="role-name">Penjual</div>
+                  <div class="role-hint">Kelola toko</div>
+                </button>
+              </div>
+            </div>
+
             <div class="auth-tabs">
-              <div
+              <button
                 class="auth-tab on"
                 id="tab-login"
                 onclick="switchTab('login')"
               >
-                Sign In
-              </div>
-              <div
+                Masuk
+              </button>
+              <button
                 class="auth-tab"
                 id="tab-register"
                 onclick="switchTab('register')"
               >
-                Create Account
-              </div>
+                Daftar
+              </button>
             </div>
-            <!-- Login -->
+
             <div class="subform on" id="sf-login">
-              <div class="auth-heading">Welcome back.</div>
-              <div class="auth-desc">
-                Sign in to access your account and orders.
+              <div class="form-heading" id="login-title">Selamat Datang!</div>
+              <div class="form-sub" id="login-sub">
+                Masuk ke akun Anda untuk mulai berbelanja.
               </div>
               <div class="fg">
                 <label>Username</label
                 ><input
                   id="l-user"
-                  placeholder="your_username"
+                  placeholder="Masukkan username"
                   autocomplete="username"
                 />
               </div>
               <div class="fg">
-                <label>Password</label
+                <label>Kata Sandi</label
                 ><input
                   id="l-pass"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Masukkan kata sandi"
                   autocomplete="current-password"
                 />
               </div>
@@ -1310,20 +308,54 @@
                 class="btn btn-primary btn-full"
                 id="login-btn"
                 onclick="doLogin()"
-                style="margin-top: 20px"
               >
-                Sign In
+                Masuk
               </button>
+
+              <!-- Demo account quick-login -->
+              <div class="demo-accounts">
+                <div class="demo-accounts-label">
+                  <span class="demo-divider-line"></span>
+                  <span class="demo-divider-txt">Akun Demo</span>
+                  <span class="demo-divider-line"></span>
+                </div>
+                <div class="demo-cards">
+                  <button
+                    class="demo-card demo-buyer"
+                    onclick="quickLogin('pembeli', 'pembeli123', 'buyer')"
+                  >
+                    <div class="demo-card-ico">🛒</div>
+                    <div class="demo-card-info">
+                      <div class="demo-card-role">Pembeli</div>
+                      <div class="demo-card-cred">pembeli / pembeli123</div>
+                    </div>
+                    <div class="demo-card-arrow">→</div>
+                  </button>
+                  <button
+                    class="demo-card demo-seller"
+                    onclick="quickLogin('penjual', 'penjual123', 'seller')"
+                  >
+                    <div class="demo-card-ico">🏪</div>
+                    <div class="demo-card-info">
+                      <div class="demo-card-role">Penjual</div>
+                      <div class="demo-card-cred">penjual / penjual123</div>
+                    </div>
+                    <div class="demo-card-arrow">→</div>
+                  </button>
+                </div>
+              </div>
             </div>
-            <!-- Register -->
+
             <div class="subform" id="sf-register">
-              <div class="auth-heading">Join VAULT.</div>
-              <div class="auth-desc">Create an account to start shopping.</div>
+              <div class="form-heading" id="reg-title">Buat Akun Baru</div>
+              <div class="form-sub" id="reg-sub">
+                Bergabung dan mulai berbelanja hari ini.
+              </div>
               <div class="fg">
                 <label>Username</label
                 ><input
                   id="r-user"
-                  placeholder="your_username"
+                  placeholder="Buat username unik"
                   autocomplete="username"
                 />
               </div>
@@ -1332,16 +364,16 @@
                 ><input
                   id="r-email"
                   type="email"
-                  placeholder="you@email.com"
+                  placeholder="email@contoh.com"
                   autocomplete="email"
                 />
               </div>
               <div class="fg">
-                <label>Password</label
+                <label>Kata Sandi</label
                 ><input
                   id="r-pass"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Min. 8 karakter"
                   autocomplete="new-password"
                 />
               </div>
@@ -1350,9 +382,8 @@
                 class="btn btn-primary btn-full"
                 id="reg-btn"
                 onclick="doRegister()"
-                style="margin-top: 20px"
               >
-                Create Account
+                Daftar Sekarang
               </button>
             </div>
           </div>
@@ -1362,589 +393,896 @@
 
     <!-- STORE PAGE -->
     <div class="inner-page" id="page-store">
-      <div class="store-wrap">
-        <div class="store-top">
-          <div>
-            <div class="store-kicker" id="store-kicker">— products</div>
-            <div class="store-title">The <em>Collection</em></div>
-          </div>
-          <button class="btn btn-ghost btn-sm" onclick="loadProducts()">
-            ↻ &nbsp;Refresh
-          </button>
+      <!-- Promo Ticker -->
+      <div class="promo-ticker" aria-hidden="true">
+        <div class="ticker-track">
+          <span class="ticker-item">⚡ Flash Sale Setiap Hari</span>
+          <span class="ticker-sep">·</span>
+          <span class="ticker-item">🚚 Gratis Ongkir Min. Rp100.000</span>
+          <span class="ticker-sep">·</span>
+          <span class="ticker-item">💳 Cashback 5% Pembayaran Pertama</span>
+          <span class="ticker-sep">·</span>
+          <span class="ticker-item">⭐ Garansi Resmi Tersedia</span>
+          <span class="ticker-sep">·</span>
+          <span class="ticker-item">🔒 Produk 100% Original</span>
+          <span class="ticker-sep">·</span>
+          <span class="ticker-item">⚡ Flash Sale Setiap Hari</span>
+          <span class="ticker-sep">·</span>
+          <span class="ticker-item">🚚 Gratis Ongkir Min. Rp100.000</span>
+          <span class="ticker-sep">·</span>
+          <span class="ticker-item">💳 Cashback 5% Pembayaran Pertama</span>
+          <span class="ticker-sep">·</span>
+          <span class="ticker-item">⭐ Garansi Resmi Tersedia</span>
+          <span class="ticker-sep">·</span>
+          <span class="ticker-item">🔒 Produk 100% Original</span>
+          <span class="ticker-sep">·</span>
         </div>
-        <div id="prod-area"></div>
-        <hr class="divider" />
-        <div class="sect-kicker">Add New Product</div>
-        <div class="add-grid">
-          <div>
-            <label>Name</label><input id="np-name" placeholder="Product name" />
+      </div>
+
+      <!-- Hero banner -->
+      <div class="store-hero">
+        <div class="sh-content">
+          <div class="sh-title">Gadget Terbaik, Harga Terjangkau</div>
+          <div class="sh-sub">
+            Laptop, smartphone, audio &amp; aksesori teknologi terkini —
+            original &amp; bergaransi resmi
           </div>
-          <div>
-            <label>Price (USD)</label
-            ><input
-              id="np-price"
-              type="number"
-              placeholder="0.00"
-              step="0.01"
+          <div class="sh-searchbar">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#9e9e9e"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              id="store-search"
+              class="sh-input"
+              placeholder="Cari laptop, HP, headphone..."
+              oninput="filterProducts()"
             />
+            <button class="sh-search-btn" onclick="filterProducts()">
+              Cari
+            </button>
           </div>
+        </div>
+        <div class="sh-display-text" aria-hidden="true">Tech</div>
+      </div>
+
+      <!-- Stats Bar -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-num">500+</div>
+          <div class="stat-lbl">SKU Produk</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+          <div class="stat-num">80K+</div>
+          <div class="stat-lbl">Pengguna</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+          <div class="stat-num">34</div>
+          <div class="stat-lbl">Kota</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+          <div class="stat-num">4.9★</div>
+          <div class="stat-lbl">Rating</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+          <div class="stat-num">150K+</div>
+          <div class="stat-lbl">Pesanan</div>
+        </div>
+      </div>
+
+      <!-- Flash Sale -->
+      <div class="flash-sale-section">
+        <div class="flash-hdr">
+          <div class="flash-title-group">
+            <div class="flash-badge">⚡ FLASH SALE</div>
+            <div class="flash-sub">Penawaran terbatas, habis ya habis!</div>
+          </div>
+          <div class="flash-countdown">
+            <div class="cd-unit">
+              <span class="cd-num" id="cd-h">06</span>
+              <span class="cd-lbl">JAM</span>
+            </div>
+            <span class="cd-colon">:</span>
+            <div class="cd-unit">
+              <span class="cd-num" id="cd-m">23</span>
+              <span class="cd-lbl">MENIT</span>
+            </div>
+            <span class="cd-colon">:</span>
+            <div class="cd-unit">
+              <span class="cd-num" id="cd-s">47</span>
+              <span class="cd-lbl">DETIK</span>
+            </div>
+          </div>
+        </div>
+        <div class="flash-products-scroll">
+          <div class="flash-products" id="flash-products"></div>
+        </div>
+      </div>
+
+      <!-- Category Visual Cards -->
+      <div class="cat-cards-section">
+        <div class="cat-cards-hdr">
+          <div class="cat-cards-title">Jelajahi Kategori</div>
+          <div class="cat-cards-sub">Temukan gadget sesuai kebutuhanmu</div>
+        </div>
+        <div class="cat-cards-grid" id="cat-cards-grid"></div>
+      </div>
+
+      <!-- Main content: sidebar + products -->
+      <div class="store-body">
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-heading">Kategori</div>
+            <div class="cat-list">
+              <div
+                class="cat-item active"
+                data-cat="all"
+                onclick="filterByCategory('all')"
+              >
+                <div class="cat-item-inner">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                  </svg>
+                  <span>Semua Produk</span>
+                </div>
+                <span class="cat-count" id="all-count">0</span>
+              </div>
+              <div
+                class="cat-item"
+                data-cat="laptop"
+                onclick="filterByCategory('laptop')"
+              >
+                <div class="cat-item-inner">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="2" y="3" width="20" height="14" rx="2" />
+                    <path d="M0 21h24" />
+                  </svg>
+                  <span>Laptop &amp; Monitor</span>
+                </div>
+                <span class="cat-count">0</span>
+              </div>
+              <div
+                class="cat-item"
+                data-cat="phone"
+                onclick="filterByCategory('phone')"
+              >
+                <div class="cat-item-inner">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="5" y="2" width="14" height="20" rx="2" />
+                    <line x1="12" y1="18" x2="12.01" y2="18" />
+                  </svg>
+                  <span>Smartphone</span>
+                </div>
+                <span class="cat-count">0</span>
+              </div>
+              <div
+                class="cat-item"
+                data-cat="audio"
+                onclick="filterByCategory('audio')"
+              >
+                <div class="cat-item-inner">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+                    <path
+                      d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"
+                    />
+                    <path
+                      d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"
+                    />
+                  </svg>
+                  <span>Audio</span>
+                </div>
+                <span class="cat-count">0</span>
+              </div>
+              <div
+                class="cat-item"
+                data-cat="peripheral"
+                onclick="filterByCategory('peripheral')"
+              >
+                <div class="cat-item-inner">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M5 3h14a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
+                    />
+                    <line x1="16" y1="7" x2="16.01" y2="7" />
+                    <line x1="19" y1="7" x2="19.01" y2="7" />
+                    <path
+                      d="M5 14h8a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2z"
+                    />
+                  </svg>
+                  <span>Peripheral</span>
+                </div>
+                <span class="cat-count">0</span>
+              </div>
+              <div
+                class="cat-item"
+                data-cat="storage"
+                onclick="filterByCategory('storage')"
+              >
+                <div class="cat-item-inner">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <ellipse cx="12" cy="5" rx="9" ry="3" />
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                  </svg>
+                  <span>Storage</span>
+                </div>
+                <span class="cat-count">0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="sfg-label" onclick="filterSort('new')">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              New Arrival
+              <svg
+                class="sfg-arrow"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+            <div class="sfg-label" onclick="filterSort('popular')">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                />
+              </svg>
+              Best Seller
+              <svg
+                class="sfg-arrow"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+            <div class="sfg-label" onclick="filterSort('discount')">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="9" cy="9" r="2" />
+                <circle cx="15" cy="15" r="2" />
+                <line x1="5" y1="19" x2="19" y2="5" />
+              </svg>
+              On Discount
+              <svg
+                class="sfg-arrow"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+          </div>
+        </aside>
+
+        <!-- PRODUCT AREA -->
+        <main class="store-main">
+          <!-- Sort bar -->
+          <div class="sort-bar">
+            <span class="sort-label">Urutkan:</span>
+            <button
+              class="sort-chip active"
+              onclick="sortProducts('default')"
+              id="sort-default"
+            >
+              Terbaru
+            </button>
+            <button
+              class="sort-chip"
+              onclick="sortProducts('popular')"
+              id="sort-popular"
+            >
+              Terpopuler
+            </button>
+            <button
+              class="sort-chip"
+              onclick="sortProducts('price-asc')"
+              id="sort-price-asc"
+            >
+              Harga ↑
+            </button>
+            <button
+              class="sort-chip"
+              onclick="sortProducts('price-desc')"
+              id="sort-price-desc"
+            >
+              Harga ↓
+            </button>
+            <button
+              class="sort-chip"
+              onclick="sortProducts('rating')"
+              id="sort-rating"
+            >
+              Rating
+            </button>
+          </div>
+          <div class="section-hdr">
+            <div class="section-ttl">
+              Semua Produk <span class="count-badge" id="store-count"></span>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="loadProducts()">
+              &#x21BB; Refresh
+            </button>
+          </div>
+          <div id="prod-area"></div>
+
+          <!-- Pagination placeholder -->
+          <div class="pagination" id="pagination" style="display: none">
+            <button class="pag-btn" onclick="changePage(-1)">
+              &#8592; Previous
+            </button>
+            <div class="pag-pages" id="pag-pages"></div>
+            <button class="pag-btn" onclick="changePage(1)">
+              Next &#8594;
+            </button>
+          </div>
+
+          <!-- Recommendations section -->
+          <div class="reco-section">
+            <div class="reco-hdr">
+              <div class="reco-title">Rekomendasi Untukmu</div>
+              <div class="reco-nav">
+                <button class="reco-arrow" onclick="scrollReco(-1)">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+                <button class="reco-arrow" onclick="scrollReco(1)">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="reco-scroll" id="reco-scroll"></div>
+          </div>
+        </main>
+      </div>
+
+      <!-- CTA Banner -->
+      <div class="cta-banner">
+        <div class="cta-left">
+          <div class="cta-title">Ready to Get<br />Our New Stuff?</div>
+          <div class="cta-email-row">
+            <input
+              class="cta-email-input"
+              placeholder="Your Email"
+              type="email"
+            />
+            <button class="cta-send-btn">Send</button>
+          </div>
+        </div>
+        <div class="cta-right">
+          <div class="cta-brand-name">ShopGo for Homes and Needs</div>
+          <p class="cta-brand-desc">
+            We'll listen to your needs, identify the best approach, and then
+            create a bespoke smart EV charging solution that's right for you.
+          </p>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="site-footer">
+        <div class="footer-inner">
+          <div class="footer-col">
+            <div class="footer-heading">About</div>
+            <a href="#" class="footer-link">Blog</a>
+            <a href="#" class="footer-link">Meet The Team</a>
+            <a href="#" class="footer-link">Contact Us</a>
+          </div>
+          <div class="footer-col">
+            <div class="footer-heading">Support</div>
+            <a href="#" class="footer-link">Contact Us</a>
+            <a href="#" class="footer-link">Shipping</a>
+            <a href="#" class="footer-link">Return</a>
+            <a href="#" class="footer-link">FAQ</a>
+          </div>
+          <div class="footer-col">
+            <div class="footer-heading">Social Media</div>
+            <div class="social-row">
+              <a href="#" class="social-btn" aria-label="Twitter/X">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.736l7.737-8.835L1.254 2.25H8.08l4.26 5.632L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"
+                  />
+                </svg>
+              </a>
+              <a href="#" class="social-btn" aria-label="Facebook">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                  />
+                </svg>
+              </a>
+              <a href="#" class="social-btn" aria-label="LinkedIn">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
+                  />
+                  <rect x="2" y="9" width="4" height="12" />
+                  <circle cx="4" cy="4" r="2" />
+                </svg>
+              </a>
+              <a href="#" class="social-btn" aria-label="Instagram">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="2" y="2" width="20" height="20" rx="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>Copyright &copy; 2023 ShopGo. All Rights Reserved.</span>
+          <div class="footer-bottom-links">
+            <a href="#">Terms of Service</a>
+            <a href="#">Privacy Policy</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- MANAGE PAGE -->
+    <div class="inner-page" id="page-manage">
+      <div class="page-content">
+        <div class="page-hdr">
           <div>
-            <label>Description</label
-            ><input id="np-desc" placeholder="Short description" />
+            <div class="page-eyebrow">Dashboard Penjual</div>
+            <h1 class="page-title">Kelola Produk</h1>
           </div>
-          <button
-            class="btn btn-accent btn-sm"
-            onclick="doAddProduct()"
-            style="white-space: nowrap"
-          >
-            + Add Product
+          <button class="btn btn-outline btn-sm" onclick="loadProducts()">
+            &#x21BB; Refresh
           </button>
         </div>
+
+        <!-- Seller Dashboard Stats -->
+        <div class="dashboard-stats">
+          <div class="ds-card">
+            <div class="ds-icon">📦</div>
+            <div class="ds-info">
+              <div class="ds-val" id="ds-products">0</div>
+              <div class="ds-lbl">Total Produk</div>
+            </div>
+          </div>
+          <div class="ds-card">
+            <div class="ds-icon">💰</div>
+            <div class="ds-info">
+              <div class="ds-val" id="ds-revenue">$0</div>
+              <div class="ds-lbl">Est. Revenue</div>
+            </div>
+          </div>
+          <div class="ds-card">
+            <div class="ds-icon">📊</div>
+            <div class="ds-info">
+              <div class="ds-val" id="ds-sold">0</div>
+              <div class="ds-lbl">Total Terjual</div>
+            </div>
+          </div>
+          <div class="ds-card">
+            <div class="ds-icon">⭐</div>
+            <div class="ds-info">
+              <div class="ds-val" id="ds-rating">0.0</div>
+              <div class="ds-lbl">Avg Rating</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="add-form-box">
+          <div class="add-form-title">+ Tambah Produk Baru</div>
+          <div class="add-grid">
+            <div class="fg">
+              <label>Nama Produk</label
+              ><input id="np-name" placeholder="Contoh: Laptop Gaming ROG" />
+            </div>
+            <div class="fg">
+              <label>Harga (USD)</label
+              ><input
+                id="np-price"
+                type="number"
+                placeholder="0.00"
+                step="0.01"
+              />
+            </div>
+            <div class="fg add-desc">
+              <label>Deskripsi</label
+              ><input id="np-desc" placeholder="Deskripsikan produk Anda..." />
+            </div>
+            <button class="btn btn-primary" onclick="doAddProduct()">
+              &#x2B; Tambah
+            </button>
+          </div>
+        </div>
+
+        <div class="section-hdr">
+          <div class="section-ttl">
+            Produk Saya <span class="count-badge" id="manage-count"></span>
+          </div>
+        </div>
+        <div id="manage-area"></div>
       </div>
     </div>
 
     <!-- ORDERS PAGE -->
     <div class="inner-page" id="page-orders">
-      <div class="orders-wrap">
-        <div class="orders-title">Your Orders</div>
-        <div id="orders-area">
-          <div class="orders-empty"><div class="oe-title">Loading…</div></div>
+      <div class="page-content">
+        <div class="page-hdr">
+          <div>
+            <div class="page-eyebrow" id="orders-eyebrow">Riwayat Belanja</div>
+            <h1 class="page-title" id="orders-title">Pesanan Saya</h1>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="loadOrders()">
+            &#x21BB; Refresh
+          </button>
         </div>
+        <div id="orders-area"></div>
       </div>
     </div>
 
-    <!-- CART DRAWER -->
-    <div class="cart-scrim" id="cart-scrim" onclick="closeCart()"></div>
-    <div class="cart-drawer" id="cart-drawer">
-      <div class="drawer-head">
-        <div class="drawer-title">Your Cart</div>
-        <button class="close-x" onclick="closeCart()">✕</button>
+    <!-- BOTTOM NAV (mobile) -->
+    <nav class="bottom-nav" id="bottom-nav">
+      <div class="bnav-item on" id="bn-store" onclick="goPage('store')">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        </svg>
+        <div class="bnav-lbl">Beranda</div>
       </div>
-      <div class="drawer-body" id="cart-body">
-        <div class="cart-empty-state">
-          <div class="ce-icon">🛒</div>
-          <div class="ce-text">Your cart is empty</div>
+      <div class="bnav-item" id="bn-orders" onclick="goPage('orders')">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+          />
+          <polyline points="14 2 14 8 20 8" />
+        </svg>
+        <div class="bnav-lbl">Transaksi</div>
+      </div>
+      <div
+        class="bnav-item"
+        id="bn-manage"
+        onclick="goPage('manage')"
+        style="display: none"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"
+          />
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+        </svg>
+        <div class="bnav-lbl">Produk</div>
+      </div>
+      <div class="bnav-item" id="bn-cart" onclick="openCart()">
+        <div class="bnav-ico-wrap">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path
+              d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+            />
+          </svg>
+          <span class="bnav-cart-dot" id="bnav-badge">0</span>
         </div>
+        <div class="bnav-lbl">Keranjang</div>
       </div>
+      <div class="bnav-item" onclick="logout()">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+        <div class="bnav-lbl" id="bn-username">Akun</div>
+      </div>
+    </nav>
+
+    <!-- CART DRAWER -->
+    <div class="scrim" id="cart-scrim" onclick="closeCart()"></div>
+    <div class="drawer" id="cart-drawer">
+      <div class="drawer-hdr">
+        <div class="drawer-ttl">Keranjang Belanja</div>
+        <button class="close-btn" onclick="closeCart()">&#x2715;</button>
+      </div>
+      <div class="drawer-body" id="cart-body"></div>
       <div class="drawer-foot">
-        <div class="total-row">
-          <div class="total-lbl">Total</div>
-          <div class="total-amt" id="cart-total">$0.00</div>
+        <div class="total-bar">
+          <span class="total-lbl">Total Belanja</span>
+          <span class="total-val" id="cart-total">$0.00</span>
         </div>
         <button class="btn btn-primary btn-full" onclick="openCheckout()">
-          Proceed to Checkout
+          Beli Sekarang &rarr;
         </button>
       </div>
     </div>
 
     <!-- CHECKOUT MODAL -->
     <div class="modal-scrim" id="modal-scrim">
-      <div class="modal">
-        <div class="modal-head">
-          <div class="modal-title">Confirm Order</div>
-          <button class="close-x" onclick="closeCheckout()">✕</button>
+      <div class="modal-box">
+        <div class="modal-hdr">
+          <div class="modal-ttl">Konfirmasi Pesanan</div>
+          <button class="close-btn" onclick="closeCheckout()">&#x2715;</button>
         </div>
         <div class="modal-body" id="modal-body"></div>
         <div class="modal-foot">
           <button
-            class="btn btn-ghost"
+            class="btn btn-outline"
             style="flex: 1"
             onclick="closeCheckout()"
           >
-            Cancel
+            Batal
           </button>
           <button
-            class="btn btn-accent"
+            class="btn btn-primary"
             style="flex: 2"
             id="place-btn"
             onclick="placeOrder()"
           >
-            Place Order
+            &#x2714; Buat Pesanan
           </button>
         </div>
       </div>
     </div>
 
-    <!-- TOASTS -->
-    <div class="toast-wrap" id="toasts"></div>
-
-    <script>
-      "use strict";
-      const BASE = window.location.origin;
-
-      const S = {
-        token: sessionStorage.getItem("v_tok") || null,
-        userId: sessionStorage.getItem("v_uid") || null,
-        username: sessionStorage.getItem("v_user") || null,
-        products: [],
-        cart: [],
-      };
-
-      const ICONS = [
-        "💻",
-        "🖱",
-        "⌨️",
-        "🖥",
-        "📱",
-        "🎧",
-        "📷",
-        "🖨",
-        "⌚",
-        "🔋",
-        "🕹",
-        "📡",
-      ];
-      const GRADS = ["grd-0", "grd-1", "grd-2", "grd-3", "grd-4", "grd-5"];
-
-      /* ── Init ── */
-      window.addEventListener("DOMContentLoaded", () => {
-        if (S.token) enterApp();
-        bindEnter(["l-user", "l-pass"], doLogin);
-        bindEnter(["r-user", "r-email", "r-pass"], doRegister);
-      });
-
-      function bindEnter(ids, fn) {
-        ids.forEach((id) => {
-          const el = $id(id);
-          if (el)
-            el.addEventListener("keydown", (e) => {
-              if (e.key === "Enter") fn();
-            });
-        });
-      }
-
-      /* ── Auth tabs ── */
-      function switchTab(tab) {
-        ["login", "register"].forEach((t) => {
-          $id("tab-" + t).classList.toggle("on", t === tab);
-          $id("sf-" + t).classList.toggle("on", t === tab);
-        });
-        clearErrs();
-      }
-      function clearErrs() {
-        ["login-err", "reg-err"].forEach((id) => {
-          const el = $id(id);
-          el.textContent = "";
-          el.classList.remove("on");
-        });
-      }
-      function showErr(id, msg) {
-        const el = $id(id);
-        el.textContent = msg;
-        el.classList.add("on");
-      }
-
-      /* ── API ── */
-      async function api(method, path, body) {
-        const opts = {
-          method,
-          headers: { "Content-Type": "application/json" },
-        };
-        if (body !== undefined) opts.body = JSON.stringify(body);
-        const res = await fetch(BASE + path, opts);
-        const text = await res.text();
-        let data;
-        try {
-          data = JSON.parse(text);
-        } catch {
-          data = { message: text };
-        }
-        if (!res.ok)
-          throw new Error(data.error || data.message || "Request failed");
-        return data;
-      }
-
-      /* ── Login ── */
-      async function doLogin() {
-        clearErrs();
-        const username = v("l-user"),
-          password = v("l-pass");
-        if (!username || !password) {
-          showErr("login-err", "Please fill in all fields.");
-          return;
-        }
-        const btn = $id("login-btn");
-        setLoad(btn, true);
-        try {
-          const d = await api("POST", "/auth/login", { username, password });
-          saveAuth(d.token, d.user_id, username);
-          enterApp();
-          toast("Welcome back, " + username + "!");
-        } catch (e) {
-          showErr("login-err", e.message);
-        } finally {
-          setLoad(btn, false, "Sign In");
-        }
-      }
-
-      /* ── Register ── */
-      async function doRegister() {
-        clearErrs();
-        const username = v("r-user"),
-          email = v("r-email"),
-          password = v("r-pass");
-        if (!username || !email || !password) {
-          showErr("reg-err", "Please fill in all fields.");
-          return;
-        }
-        const btn = $id("reg-btn");
-        setLoad(btn, true);
-        try {
-          const d = await api("POST", "/auth/register", {
-            username,
-            password,
-            email,
-          });
-          saveAuth(d.token, d.user_id, username);
-          enterApp();
-          toast("Account created. Welcome, " + username + "!");
-        } catch (e) {
-          showErr("reg-err", e.message);
-        } finally {
-          setLoad(btn, false, "Create Account");
-        }
-      }
-
-      function saveAuth(token, uid, username) {
-        S.token = token;
-        S.userId = uid;
-        S.username = username;
-        sessionStorage.setItem("v_tok", token);
-        sessionStorage.setItem("v_uid", uid);
-        sessionStorage.setItem("v_user", username);
-      }
-
-      function logout() {
-        Object.assign(S, {
-          token: null,
-          userId: null,
-          username: null,
-          cart: [],
-          products: [],
-        });
-        sessionStorage.clear();
-        $id("topnav").classList.remove("vis");
-        document
-          .querySelectorAll(".inner-page")
-          .forEach((p) => p.classList.remove("active"));
-        $id("page-auth").style.display = "";
-        $id("page-auth").classList.add("active");
-        updateCartBadge();
-        toast("Signed out.");
-      }
-
-      /* ── App enter ── */
-      function enterApp() {
-        $id("page-auth").style.display = "none";
-        $id("page-auth").classList.remove("active");
-        $id("topnav").classList.add("vis");
-        $id("u-avatar").textContent = (S.username || "?")
-          .charAt(0)
-          .toUpperCase();
-        $id("u-name").textContent = S.username || "User";
-        goPage("store");
-      }
-
-      /* ── Page nav ── */
-      function goPage(name) {
-        document
-          .querySelectorAll(".inner-page")
-          .forEach((p) => p.classList.remove("active"));
-        document
-          .querySelectorAll(".navlink")
-          .forEach((l) => l.classList.remove("on"));
-        $id("page-" + name).classList.add("active");
-        const nl = $id("nl-" + name);
-        if (nl) nl.classList.add("on");
-        if (name === "store" && S.products.length === 0) loadProducts();
-        if (name === "orders") loadOrders();
-      }
-
-      /* ── Products ── */
-      async function loadProducts() {
-        $id("prod-area").innerHTML = skelHTML();
-        try {
-          const d = await api("GET", "/products");
-          S.products = d.products || [];
-          $id("store-kicker").textContent =
-            S.products.length +
-            " product" +
-            (S.products.length !== 1 ? "s" : "");
-          renderProducts();
-        } catch (e) {
-          $id("prod-area").innerHTML = errHTML(e.message);
-        }
-      }
-
-      function renderProducts() {
-        if (!S.products.length) {
-          $id("prod-area").innerHTML =
-            `<div style="text-align:center;padding:80px;color:var(--txt-muted)"><div style="font-family:var(--serif);font-size:30px;font-weight:300;color:var(--txt-dim);margin-bottom:8px">No products yet.</div><div style="font-size:13px">Add one below.</div></div>`;
-          return;
-        }
-        $id("prod-area").innerHTML = `<div class="prod-grid">${S.products
-          .map((p, i) => {
-            const icon = ICONS[hash(p.id) % ICONS.length];
-            const grd = GRADS[hash(p.name) % GRADS.length];
-            return `<div class="prod-card" style="animation-delay:${i * 55}ms">
-        <div class="prod-visual ${grd}"><div class="prod-emoji">${icon}</div></div>
-        <div class="prod-info">
-          <div class="prod-name">${esc(p.name)}</div>
-          <div class="prod-desc">${esc(p.description) || "Premium quality product."}</div>
-          <div class="prod-footer">
-            <div>
-              <div class="prod-price-lbl">Price</div>
-              <div class="prod-price">$${fmt(p.price)}</div>
-            </div>
-            <button class="btn btn-circle" onclick="addToCart('${esc(p.id)}')" title="Add to cart">+</button>
-          </div>
+    <!-- REVIEW MODAL — muncul setelah pembeli konfirmasi pesanan diterima -->
+    <div class="modal-scrim" id="review-scrim">
+      <div class="modal-box">
+        <div class="modal-hdr">
+          <div class="modal-ttl">&#x2B50; Konfirmasi &amp; Beri Ulasan</div>
+          <button class="close-btn" onclick="closeReview()">&#x2715;</button>
         </div>
-      </div>`;
-          })
-          .join("")}</div>`;
-      }
-
-      async function doAddProduct() {
-        const name = v("np-name"),
-          price = parseFloat(v("np-price")) || 0,
-          description = v("np-desc");
-        if (!name) {
-          toast("Enter a product name.", "err");
-          return;
-        }
-        try {
-          await api("POST", "/products", { name, price, description });
-          toast('"' + name + '" added to the collection!');
-          ["np-name", "np-price", "np-desc"].forEach((x) => {
-            $id(x).value = "";
-          });
-          await loadProducts();
-        } catch (e) {
-          toast(e.message, "err");
-        }
-      }
-
-      /* ── Cart ── */
-      function addToCart(productId) {
-        const p = S.products.find((x) => x.id === productId);
-        if (!p) return;
-        const ex = S.cart.find((c) => c.product.id === productId);
-        if (ex) ex.qty++;
-        else S.cart.push({ product: p, qty: 1 });
-        updateCartBadge();
-        toast(p.name + " added to cart");
-      }
-      function changeQty(idx, d) {
-        S.cart[idx].qty += d;
-        if (S.cart[idx].qty <= 0) S.cart.splice(idx, 1);
-        updateCartBadge();
-        renderCartBody();
-      }
-      function removeItem(idx) {
-        S.cart.splice(idx, 1);
-        updateCartBadge();
-        renderCartBody();
-      }
-
-      function updateCartBadge() {
-        const count = S.cart.reduce((s, c) => s + c.qty, 0);
-        const badge = $id("cart-badge");
-        badge.textContent = count;
-        badge.classList.toggle("vis", count > 0);
-        const total = S.cart.reduce((s, c) => s + c.product.price * c.qty, 0);
-        $id("cart-total").textContent = "$" + fmt(total);
-      }
-
-      function renderCartBody() {
-        const el = $id("cart-body");
-        if (!S.cart.length) {
-          el.innerHTML = `<div class="cart-empty-state"><div class="ce-icon">🛒</div><div class="ce-text">Your cart is empty</div></div>`;
-          return;
-        }
-        el.innerHTML = S.cart
-          .map((c, i) => {
-            const icon = ICONS[hash(c.product.id) % ICONS.length];
-            const grd = GRADS[hash(c.product.name) % GRADS.length];
-            return `<div class="cart-item">
-        <div class="cart-thumb ${grd}">${icon}</div>
-        <div class="cart-item-info">
-          <div class="cart-item-name">${esc(c.product.name)}</div>
-          <div class="cart-item-price">$${fmt(c.product.price)} × ${c.qty} = $${fmt(c.product.price * c.qty)}</div>
+        <div class="modal-body" id="review-body">
+          <!-- diisi JS -->
         </div>
-        <div class="qty-ctrl">
-          <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
-          <span class="qty-n">${c.qty}</span>
-          <button class="qty-btn" onclick="changeQty(${i}, 1)">+</button>
+        <div class="modal-foot">
+          <button
+            class="btn btn-outline"
+            style="flex: 1"
+            onclick="closeReview()"
+          >
+            Lewati
+          </button>
+          <button
+            class="btn btn-primary"
+            style="flex: 2"
+            id="review-submit-btn"
+            onclick="submitReview()"
+          >
+            &#x2714; Kirim Ulasan
+          </button>
         </div>
-        <span class="rm-btn" onclick="removeItem(${i})">✕</span>
-      </div>`;
-          })
-          .join("");
-      }
-
-      function openCart() {
-        renderCartBody();
-        $id("cart-scrim").classList.add("vis");
-        $id("cart-drawer").classList.add("vis");
-      }
-      function closeCart() {
-        $id("cart-scrim").classList.remove("vis");
-        $id("cart-drawer").classList.remove("vis");
-      }
-
-      /* ── Checkout ── */
-      function openCheckout() {
-        if (!S.cart.length) {
-          toast("Your cart is empty.", "err");
-          return;
-        }
-        closeCart();
-        const total = S.cart.reduce((s, c) => s + c.product.price * c.qty, 0);
-        $id("modal-body").innerHTML = `
-      <div class="order-summary">
-        ${S.cart
-          .map(
-            (c) => `<div class="os-row">
-          <div><div class="os-name">${esc(c.product.name)}</div><div class="os-meta">${esc(c.product.id)} · qty ${c.qty}</div></div>
-          <div class="os-price">$${fmt(c.product.price * c.qty)}</div>
-        </div>`,
-          )
-          .join("")}
       </div>
-      <div class="grand-total">
-        <div class="gt-lbl">Total Amount</div>
-        <div class="gt-amt">$${fmt(total)}</div>
-      </div>`;
-        $id("modal-scrim").classList.add("vis");
-      }
-      function closeCheckout() {
-        $id("modal-scrim").classList.remove("vis");
-      }
+    </div>
 
-      async function placeOrder() {
-        if (!S.cart.length) return;
-        const btn = $id("place-btn");
-        setLoad(btn, true);
-        const placed = [],
-          errors = [];
-        for (const c of S.cart) {
-          try {
-            await api("POST", "/orders", {
-              user_id: S.userId,
-              product_id: c.product.id,
-              quantity: c.qty,
-              unit_price: c.product.price,
-            });
-            placed.push(c);
-          } catch (e) {
-            errors.push(c.product.name + ": " + e.message);
-          }
-        }
-        setLoad(btn, false, "Place Order");
-        closeCheckout();
-        if (placed.length) {
-          S.cart = [];
-          updateCartBadge();
-          toast(
-            placed.length +
-              " order" +
-              (placed.length > 1 ? "s" : "") +
-              " placed!",
-          );
-          goPage("orders");
-        }
-        errors.forEach((e) => toast(e, "err"));
-      }
-
-      /* ── Orders ── */
-      async function loadOrders() {
-        $id("orders-area").innerHTML =
-          `<div class="orders-empty"><div class="oe-title">Loading…</div></div>`;
-        try {
-          const d = await api(
-            "GET",
-            "/users/" + encodeURIComponent(S.userId) + "/orders",
-          );
-          const orders = d.orders || [];
-          if (!orders.length) {
-            $id("orders-area").innerHTML =
-              `<div class="orders-empty"><div class="oe-title">No orders yet.</div><div class="oe-sub">Head to the store and start shopping.</div></div>`;
-            return;
-          }
-          $id("orders-area").innerHTML = orders
-            .map(
-              (o) => `
-        <div class="order-card">
-          <div class="order-head">
-            <div class="order-id">${esc(o.id)}</div>
-            <div class="order-badge badge-${o.status === "completed" ? "complete" : "pending"}">${esc(o.status || "pending")}</div>
-          </div>
-          <div class="order-body">
-            <div class="order-row"><span class="or-lbl">Product ID</span><span class="or-val">${esc(o.product_id)}</span></div>
-            <div class="order-row"><span class="or-lbl">Quantity</span><span class="or-val">${o.quantity}</span></div>
-            <div class="order-row"><span class="or-lbl">User ID</span><span class="or-val">${esc(o.user_id)}</span></div>
-            <div class="order-total">
-              <div class="ot-lbl">Order Total</div>
-              <div class="ot-amt">$${fmt(o.total_price)}</div>
+    <!-- EDIT MODAL -->
+    <div class="modal-scrim" id="edit-scrim">
+      <div class="modal-box">
+        <div class="modal-hdr">
+          <div class="modal-ttl">Edit Produk</div>
+          <button class="close-btn" onclick="closeEdit()">&#x2715;</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="edit-id" />
+          <div class="edit-grid">
+            <div class="fg">
+              <label>Nama Produk</label
+              ><input id="edit-name" placeholder="Nama produk" />
+            </div>
+            <div class="fg">
+              <label>Harga (USD)</label
+              ><input
+                id="edit-price"
+                type="number"
+                placeholder="0.00"
+                step="0.01"
+              />
             </div>
           </div>
-        </div>`,
-            )
-            .join("");
-        } catch (e) {
-          $id("orders-area").innerHTML =
-            `<div class="orders-empty"><div class="oe-title" style="color:var(--txt-muted)">Could not load orders.</div><div class="oe-sub" style="font-family:var(--mono);font-size:11px;margin-top:6px">${esc(e.message)}</div></div>`;
-        }
-      }
+          <div class="fg">
+            <label>Deskripsi</label
+            ><input id="edit-desc" placeholder="Deskripsi produk" />
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-outline" style="flex: 1" onclick="closeEdit()">
+            Batal
+          </button>
+          <button
+            class="btn btn-primary"
+            style="flex: 2"
+            id="edit-save-btn"
+            onclick="doUpdateProduct()"
+          >
+            Simpan Perubahan
+          </button>
+        </div>
+      </div>
+    </div>
 
-      /* ── Helpers ── */
-      const $id = (x) => document.getElementById(x);
-      const v = (x) => ($id(x)?.value ?? "").trim();
-      const esc = (s) =>
-        String(s ?? "")
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;");
-      const fmt = (n) =>
-        Number(n || 0).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        });
-      function hash(s) {
-        let h = 0;
-        for (let i = 0; i < s.length; i++)
-          h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
-        return Math.abs(h);
-      }
-      function setLoad(btn, loading, label) {
-        btn.disabled = loading;
-        btn.innerHTML = loading ? '<span class="spinner"></span>' : label;
-      }
+    <!-- PRODUCT DETAIL MODAL -->
+    <div class="modal-scrim" id="detail-scrim" onclick="closeProductDetail()">
+      <div class="detail-modal" onclick="event.stopPropagation()">
+        <button class="detail-close-btn" onclick="closeProductDetail()">
+          ✕
+        </button>
+        <div class="detail-modal-inner" id="detail-modal-inner">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
 
-      function toast(msg, type = "ok") {
-        const el = document.createElement("div");
-        el.className = "toast" + (type === "err" ? " err" : "");
-        el.innerHTML = `<span class="toast-ico">${type === "ok" ? "✓" : "✕"}</span><span>${esc(msg)}</span>`;
-        $id("toasts").appendChild(el);
-        setTimeout(() => {
-          el.style.cssText =
-            "opacity:0;transform:translateX(22px);transition:.2s ease";
-          setTimeout(() => el.remove(), 220);
-        }, 3200);
-      }
+    <!-- TOASTS -->
+    <div id="toasts" class="toast-stack"></div>
 
-      function skelHTML() {
-        return `<div class="skel-grid">${Array(6)
-          .fill(0)
-          .map(
-            () =>
-              `<div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line w60"></div><div class="skel-line w40"></div></div></div>`,
-          )
-          .join("")}</div>`;
-      }
-      function errHTML(msg) {
-        return `<div style="text-align:center;padding:64px;color:var(--txt-muted)"><div style="font-size:13px;margin-bottom:6px">⚠ Could not load products.</div><div style="font-family:var(--mono);font-size:11px">${esc(msg)}</div><div style="font-family:var(--mono);font-size:11px;margin-top:8px">Pastikan semua 4 service berjalan.</div></div>`;
-      }
-    </script>
+    <!-- JS — split files (load order matters: data → utils → auth → products → manage → cart → orders → features) -->
+    <script src="./js/data.js"></script>
+    <script src="./js/utils.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/products.js"></script>
+    <script src="./js/manage.js"></script>
+    <script src="./js/cart.js"></script>
+    <script src="./js/orders.js"></script>
+    <script src="./js/features.js"></script>
   </body>
 </html>

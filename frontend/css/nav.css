@@ -1,0 +1,231 @@
+/* ══════════════════════════════
+   TOP NAVIGATION
+══════════════════════════════ */
+.topnav {
+  height: var(--nav-h);
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: var(--white);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  gap: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.topnav.vis {
+  display: flex;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.nav-logo-text {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--charcoal);
+  letter-spacing: -0.03em;
+}
+/* "Go" suffix highlight — the G is bold, "o" lighter */
+.nav-logo-text::after {
+  content: "";
+}
+
+.nav-links {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+}
+.navlink {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--txt-3);
+  cursor: pointer;
+  border-radius: var(--r-md);
+  transition: all 0.15s;
+}
+.navlink:hover {
+  color: var(--charcoal);
+  background: var(--gray-bg);
+}
+.navlink.on {
+  color: var(--charcoal);
+  font-weight: 600;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.seller-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal);
+  background: var(--gray-bg);
+  padding: 5px 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border);
+}
+.cart-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--charcoal);
+  color: var(--white);
+  border: none;
+  border-radius: var(--r-md);
+  padding: 8px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: all 0.15s;
+  position: relative;
+}
+.cart-btn:hover {
+  background: #333;
+}
+.cart-lbl {
+  display: inline;
+}
+.cart-count {
+  background: var(--accent-red);
+  color: var(--white);
+  border-radius: var(--r-pill);
+  min-width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 0 5px;
+  transition: transform 0.18s;
+}
+.cart-count.pop {
+  transform: scale(1.35);
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--txt-2);
+  padding: 5px 14px 5px 5px;
+  background: var(--gray-bg);
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border);
+}
+.user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--charcoal);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+.signout-btn {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--txt-3);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 7px 16px;
+  transition: all 0.14s;
+}
+.signout-btn:hover {
+  border-color: var(--charcoal);
+  color: var(--charcoal);
+}
+
+/* ══════════════════════════════
+   BOTTOM NAV (mobile)
+══════════════════════════════ */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  z-index: 100;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px;
+}
+.bottom-nav.vis {
+  display: flex;
+}
+
+/* Sembunyikan bottom nav saat halaman auth aktif (tampilan awal / belum login) */
+#page-auth:not([style*="display: none"]) ~ #bottom-nav,
+#page-auth.active ~ #bottom-nav,
+body:not(.app-ready) #bottom-nav {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .bottom-nav.vis {
+    display: flex;
+  }
+}
+.bnav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+  padding: 6px 4px;
+  cursor: pointer;
+  color: var(--txt-3);
+  transition: color 0.14s;
+  font-size: 10px;
+}
+.bnav-item.on {
+  color: var(--charcoal);
+}
+.bnav-ico-wrap {
+  position: relative;
+  display: inline-flex;
+}
+.bnav-cart-dot {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: var(--accent-red);
+  color: var(--white);
+  border-radius: var(--r-pill);
+  min-width: 16px;
+  height: 16px;
+  font-size: 9px;
+  font-weight: 700;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+.bnav-cart-dot.vis {
+  display: flex;
+}
+.bnav-lbl {
+  font-size: 10px;
+  font-weight: 500;
+}

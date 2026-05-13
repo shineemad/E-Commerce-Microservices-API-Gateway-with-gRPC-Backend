@@ -1,0 +1,221 @@
+/* ══════════════════════════════
+   MODALS
+══════════════════════════════ */
+.modal-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(3px);
+}
+.modal-scrim.vis {
+  display: flex;
+  animation: fadeIn 0.2s ease;
+}
+.modal-box {
+  background: var(--white);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-modal);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: scaleIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.modal-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.modal-ttl {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+.modal-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+.modal-foot {
+  display: flex;
+  gap: 12px;
+  padding: 18px 24px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.edit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+/* Order summary in modal */
+.order-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.os-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--gray-bg);
+  border-radius: var(--r-md);
+  gap: 12px;
+}
+.os-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+.os-meta {
+  font-size: 11.5px;
+  color: var(--txt-3);
+  font-family: monospace;
+}
+.os-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--charcoal);
+  white-space: nowrap;
+}
+.grand-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--charcoal);
+  border-radius: var(--r-lg);
+}
+.grand-lbl {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+.grand-val {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+/* ── Review Modal ── */
+.review-product-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--gray-bg);
+  border-radius: var(--r-lg);
+  margin-bottom: 20px;
+}
+.rpb-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+.rpb-info {
+  flex: 1;
+  min-width: 0;
+}
+.rpb-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--charcoal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rpb-meta {
+  font-size: 11.5px;
+  color: var(--txt-3);
+  margin-top: 2px;
+}
+.review-section-lbl {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--txt-2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+/* Star rating */
+.star-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.star-btn {
+  background: none;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  color: var(--border);
+  transition:
+    color 0.15s,
+    transform 0.12s;
+  padding: 0;
+  line-height: 1;
+}
+.star-btn.active,
+.star-btn:hover {
+  color: var(--star-gold);
+}
+.star-btn:hover {
+  transform: scale(1.15);
+}
+.review-textarea {
+  width: 100%;
+  min-height: 90px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  color: var(--charcoal);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+.review-textarea:focus {
+  border-color: var(--charcoal);
+}
+.review-char-count {
+  font-size: 11px;
+  color: var(--txt-3);
+  text-align: right;
+  margin-top: 4px;
+}
+.review-already {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 0;
+  color: var(--txt-2);
+  font-size: 14px;
+}
+.review-already-ico {
+  font-size: 36px;
+}
