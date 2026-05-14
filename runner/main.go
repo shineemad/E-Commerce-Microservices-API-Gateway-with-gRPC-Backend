@@ -17,6 +17,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"os/exec"
 	"os/signal"
 	"strings"
 	"sync"
@@ -142,9 +143,38 @@ type productServer struct {
 }
 
 func newProductServer() *productServer {
-	s := &productServer{items: make(map[string]*productpb.Product), counter: 2}
-	s.items["prod-1"] = &productpb.Product{Id: "prod-1", Name: "Laptop", Price: 999.99, Description: "High-performance laptop"}
-	s.items["prod-2"] = &productpb.Product{Id: "prod-2", Name: "Mouse", Price: 29.99, Description: "Wireless mouse"}
+	s := &productServer{items: make(map[string]*productpb.Product), counter: 0}
+	seeds := []*productpb.Product{
+		// Electronics
+		{Id: "prod-1", Name: "Laptop Gaming ASUS ROG", Price: 18999999, Description: "Laptop gaming high-end dengan RTX 4060, RAM 16GB, SSD 512GB"},
+		{Id: "prod-2", Name: "Mouse Wireless Logitech MX Master 3", Price: 899000, Description: "Mouse wireless ergonomis dengan scrolling cepat dan presisi tinggi"},
+		{Id: "prod-3", Name: "Keyboard Mechanical Keychron K2", Price: 1250000, Description: "Keyboard mechanical 75% layout dengan hot-swap switch"},
+		{Id: "prod-4", Name: "Monitor IPS 27 inch LG", Price: 4200000, Description: "Monitor IPS 27 inch Full HD 144Hz, cocok untuk gaming dan desain"},
+		{Id: "prod-5", Name: "Headset Gaming Razer BlackShark V2", Price: 1350000, Description: "Headset gaming dengan THX Spatial Audio dan mic cardioid"},
+		{Id: "prod-6", Name: "SSD External Samsung T7 1TB", Price: 1750000, Description: "SSD eksternal NVMe 1TB, kecepatan baca 1050 MB/s"},
+		{Id: "prod-7", Name: "Webcam Logitech C920 HD Pro", Price: 1100000, Description: "Webcam Full HD 1080p dengan autofocus dan stereo mic"},
+		{Id: "prod-8", Name: "USB Hub 7-Port Anker", Price: 320000, Description: "USB hub 7 port dengan charging port dan transfer data cepat"},
+		// Smartphone & Tablet
+		{Id: "prod-9", Name: "Samsung Galaxy S24 256GB", Price: 13999000, Description: "Smartphone flagship Samsung dengan Exynos 2400 dan kamera 200MP"},
+		{Id: "prod-10", Name: "iPhone 15 Pro 128GB", Price: 17499000, Description: "iPhone 15 Pro dengan chip A17 Pro dan kamera ProRAW"},
+		{Id: "prod-11", Name: "Xiaomi Redmi Note 13 Pro", Price: 3899000, Description: "Smartphone mid-range dengan kamera 200MP dan baterai 5100mAh"},
+		{Id: "prod-12", Name: "iPad Air M2 256GB WiFi", Price: 12999000, Description: "Tablet iPad dengan chip M2, layar Liquid Retina 11 inch"},
+		// Audio
+		{Id: "prod-13", Name: "TWS Sony WF-1000XM5", Price: 3499000, Description: "True wireless earbuds dengan ANC terbaik dan suara Hi-Res Audio"},
+		{Id: "prod-14", Name: "Speaker Bluetooth JBL Charge 5", Price: 1999000, Description: "Speaker portable waterproof IP67 dengan bass yang powerful"},
+		{Id: "prod-15", Name: "Headphone Sony WH-1000XM5", Price: 4999000, Description: "Headphone over-ear ANC premium dengan 30 jam battery life"},
+		// Aksesoris
+		{Id: "prod-16", Name: "Tas Laptop Thule 15 inch", Price: 850000, Description: "Tas laptop premium anti-air dengan kompartemen terorganisir"},
+		{Id: "prod-17", Name: "Charger GaN 65W Anker Nano", Price: 450000, Description: "Charger GaN compact 65W dengan port USB-C dan USB-A"},
+		{Id: "prod-18", Name: "Mouse Pad XL Desk Mat", Price: 175000, Description: "Mouse pad XL 90x40cm dengan permukaan smooth dan anti-slip"},
+		{Id: "prod-19", Name: "Stand Laptop Aluminium Adjustable", Price: 280000, Description: "Stand laptop adjustable 6 level ketinggian, kompatibel semua ukuran"},
+		{Id: "prod-20", Name: "Cable Management Velcro 10pcs", Price: 45000, Description: "Velcro cable tie untuk merapikan kabel meja kerja"},
+	}
+	for _, p := range seeds {
+		s.items[p.Id] = p
+	}
+	s.counter = len(seeds)
+	log.Printf("[product] seeded %d products", len(seeds))
 	return s
 }
 
@@ -683,30 +713,64 @@ func startGateway() {
 // Main — jalankan semua service secara concurrent
 // ══════════════════════════════════════════════════════════════════════════════
 
-// checkPortsFree memeriksa apakah semua port yang dibutuhkan tersedia.
-// Jika ada yang masih dipakai proses lain, cetak pesan bantuan dan exit.
+// killPortOwners membunuh hanya proses yang memegang port tertentu berdasarkan PID.
+func killPortOwners(ports []int) {
+	var portStrs []string
+	for _, p := range ports {
+		portStrs = append(portStrs, fmt.Sprintf("%d", p))
+	}
+	script := fmt.Sprintf(
+		"Get-NetTCPConnection -LocalPort %s -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }",
+		strings.Join(portStrs, ","),
+	)
+	cmd := exec.Command("powershell", "-NoProfile", "-NonInteractive", "-Command", script)
+	_ = cmd.Run()
+}
+
+// checkPortsFree memeriksa apakah semua port tersedia.
+// Jika ada yang masih dipakai, coba bunuh proses penyebabnya dan retry.
 func checkPortsFree(ports []int) {
-	var busy []int
+	const maxRetry = 8
+	const retryDelay = 600 * time.Millisecond
+
+	for attempt := 0; attempt < maxRetry; attempt++ {
+		var busy []int
+		for _, port := range ports {
+			l, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+			if err != nil {
+				busy = append(busy, port)
+			} else {
+				l.Close()
+			}
+		}
+		if len(busy) == 0 {
+			return
+		}
+		if attempt == 0 {
+			log.Printf("[runner] Port %v masih dipakai — menghentikan proses lama...", busy)
+			killPortOwners(ports)
+		} else {
+			log.Printf("[runner] Menunggu port %v bebas... (percobaan %d/%d)", busy, attempt+1, maxRetry)
+		}
+		time.Sleep(retryDelay)
+	}
+
+	// Satu pengecekan terakhir
+	var stillBusy []int
 	for _, port := range ports {
-		addr := fmt.Sprintf(":%d", port)
-		l, err := net.Listen("tcp", addr)
+		l, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 		if err != nil {
-			busy = append(busy, port)
+			stillBusy = append(stillBusy, port)
 		} else {
 			l.Close()
 		}
 	}
-	if len(busy) == 0 {
-		return
+	if len(stillBusy) > 0 {
+		log.Printf("ERROR: Port %v masih tidak bisa dipakai setelah %d percobaan.", stillBusy, maxRetry)
+		log.Println("Coba jalankan manual di PowerShell:")
+		log.Println("  Get-NetTCPConnection -LocalPort 50051,50052,50053,8080 -State Listen | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }")
+		os.Exit(1)
 	}
-	log.Printf("ERROR: Port berikut masih dipakai proses lain: %v", busy)
-	log.Println("──────────────────────────────────────────────────────")
-	log.Println("Jalankan perintah berikut di PowerShell untuk menghentikannya:")
-	log.Println("  Get-Process -Name go,runner -ErrorAction SilentlyContinue | Stop-Process -Force")
-	log.Println("Kemudian jalankan ulang:")
-	log.Println("  go run ./runner")
-	log.Println("──────────────────────────────────────────────────────")
-	os.Exit(1)
 }
 
 func main() {

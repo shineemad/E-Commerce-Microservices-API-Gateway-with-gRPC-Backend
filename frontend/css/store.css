@@ -4,51 +4,239 @@
 .store-hero {
   position: relative;
   overflow: hidden;
-  min-height: 280px;
-  background: var(--charcoal);
+  min-height: 340px;
+  background: #0d0d0d;
   display: flex;
   align-items: flex-end;
-  padding: 0 40px 36px;
+  padding: 0 40px 40px;
 }
-.sh-display-text {
+
+/* ── Background photo mosaic ── */
+.sh-bg-mosaic {
   position: absolute;
-  right: -20px;
-  bottom: -30px;
-  font-family: var(--font-display);
-  font-size: clamp(120px, 18vw, 240px);
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.07);
-  line-height: 1;
-  letter-spacing: -0.04em;
-  user-select: none;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 3px;
   pointer-events: none;
+  opacity: 0;
+  animation: sh-mosaic-in 0.9s 0.1s ease both;
+}
+@keyframes sh-mosaic-in {
+  from { opacity: 0; transform: scale(1.04); }
+  to   { opacity: 1; transform: none; }
+}
+.sh-bg-tile {
+  overflow: hidden;
+  position: relative;
+}
+.sh-bg-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.6) brightness(0.55);
+  transition: filter 0.4s;
+}
+/* First tile spans 2 columns for rhythm */
+.sh-bg-tile:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+/* Subtle scale drift per tile */
+.sh-bg-tile:nth-child(odd)  img { animation: tile-drift-a 18s ease-in-out infinite alternate; }
+.sh-bg-tile:nth-child(even) img { animation: tile-drift-b 22s ease-in-out infinite alternate; }
+@keyframes tile-drift-a {
+  from { transform: scale(1);    }
+  to   { transform: scale(1.06); }
+}
+@keyframes tile-drift-b {
+  from { transform: scale(1.04); }
+  to   { transform: scale(1);    }
+}
+
+/* ── Gradient overlay on top of mosaic ── */
+.sh-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(105deg,
+      rgba(10,10,10,0.88) 0%,
+      rgba(10,10,10,0.65) 45%,
+      rgba(10,10,10,0.28) 100%),
+    linear-gradient(to top, rgba(10,10,10,0.72) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Desktop: 2-column hero (content left | featured products right) */
+@media (min-width: 900px) {
+  .store-hero {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    align-items: center;
+    min-height: 360px;
+    padding: 48px 52px;
+  }
+  .sh-bg-mosaic {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  .sh-bg-overlay {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 1280px) {
+  .store-hero {
+    min-height: 380px;
+    padding: 52px 60px;
+    grid-template-columns: 1fr 440px;
+  }
+}
+
+/* ── Featured products panel (right side of hero) ── */
+.sh-featured {
+  display: none;
+}
+@media (min-width: 900px) {
+  .sh-featured {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 12px;
+    height: 230px;
+    position: relative;
+  }
+}
+.sh-feat-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 16px 14px;
+  width: 122px;
+  text-align: center;
+  transition:
+    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.18s;
+  cursor: pointer;
+  flex-shrink: 0;
+  backdrop-filter: blur(8px);
+}
+.sh-feat-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+.sh-feat-card:nth-child(1) {
+  transform: translateY(16px);
+}
+.sh-feat-card:nth-child(2) {
+  transform: translateY(-14px);
+}
+.sh-feat-card:nth-child(3) {
+  transform: translateY(8px);
+}
+.sh-feat-card:nth-child(1):hover {
+  transform: translateY(8px);
+}
+.sh-feat-card:nth-child(2):hover {
+  transform: translateY(-22px);
+}
+.sh-feat-card:nth-child(3):hover {
+  transform: translateY(0px);
+}
+.sh-feat-badge {
+  display: inline-block;
+  background: var(--accent-red);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 99px;
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.sh-feat-emoji {
+  font-size: 38px;
+  line-height: 1;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.22));
+}
+.sh-feat-img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 6px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.sh-feat-name {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+  margin-bottom: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+.sh-feat-price {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--star-gold);
+  letter-spacing: -0.01em;
 }
 .sh-content {
   position: relative;
   z-index: 2;
-  max-width: 600px;
+  max-width: 560px;
+  animation: fadeUp 0.55s 0.25s ease both;
+}
+.sh-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--star-gold);
+  background: rgba(241,196,15,0.12);
+  border: 1px solid rgba(241,196,15,0.25);
+  border-radius: var(--r-pill);
+  padding: 5px 14px;
+  margin-bottom: 16px;
 }
 .sh-title {
   font-family: var(--font-display);
-  font-size: clamp(22px, 3vw, 36px);
-  font-weight: 600;
+  font-size: clamp(26px, 3.6vw, 46px);
+  font-weight: 700;
   color: var(--white);
-  margin-bottom: 8px;
-  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
 }
 .sh-sub {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.55);
-  margin-bottom: 24px;
+  margin-bottom: 28px;
+  line-height: 1.6;
+  max-width: 420px;
 }
 .sh-searchbar {
   display: flex;
   align-items: center;
-  background: var(--white);
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(12px);
   border-radius: var(--r-pill);
   padding: 10px 10px 10px 18px;
   gap: 10px;
   max-width: 480px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.28);
 }
 .sh-input {
   flex: 1;
@@ -70,12 +258,16 @@
   font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.14s;
+  transition: background 0.14s, transform 0.1s;
   font-family: var(--font-body);
 }
 .sh-search-btn:hover {
   background: #333;
+  transform: scale(1.03);
 }
+
+/* hide the old display text — mosaic replaces it */
+.sh-display-text { display: none; }
 
 /* ══════════════════════════════
    STORE LAYOUT: SIDEBAR + MAIN
@@ -636,4 +828,79 @@
   width: 100%;
   padding: 8px;
   font-size: 12px;
+}
+
+/* ══════════════════════════════════════════
+   DESKTOP ENHANCEMENTS — Product grid & layout
+══════════════════════════════════════════ */
+
+/* Taller product image on desktop */
+@media (min-width: 900px) {
+  .prod-visual {
+    height: 190px;
+  }
+  .prod-emoji {
+    font-size: 68px;
+  }
+  .prod-info {
+    padding: 16px 16px 18px;
+  }
+  .prod-name {
+    font-size: 14.5px;
+  }
+  .prod-price {
+    font-size: 18px;
+  }
+}
+
+/* 3-col default stays until 1400px */
+@media (min-width: 1280px) {
+  .store-body {
+    padding: 24px 36px 0;
+    max-width: 1600px;
+  }
+  .prod-grid {
+    gap: 18px;
+  }
+}
+
+/* 4-column product grid at large desktops */
+@media (min-width: 1440px) {
+  .prod-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .skel-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .store-body {
+    padding: 28px 48px 0;
+  }
+}
+
+/* Stats bar desktop */
+@media (min-width: 900px) {
+  .stats-bar {
+    border-bottom: none;
+    background: #f8f8f8;
+    border-top: 1px solid var(--border);
+  }
+  .stat-num {
+    font-size: 26px;
+  }
+  .stat-lbl {
+    font-size: 11.5px;
+  }
+  .stat-item {
+    padding: 10px 40px;
+  }
+}
+
+/* Better section header on desktop */
+@media (min-width: 900px) {
+  .section-ttl {
+    font-size: 18px;
+  }
+  .reco-title {
+    font-size: 24px;
+  }
 }

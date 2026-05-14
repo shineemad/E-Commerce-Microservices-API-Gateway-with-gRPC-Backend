@@ -72,22 +72,6 @@ async function quickLogin(username, password, role) {
   await doLogin();
 }
 
-/* Hardcoded demo accounts — used as fallback when backend is offline */
-const DEMO_ACCOUNTS = {
-  pembeli: { password: "pembeli123", role: "buyer", uid: "demo-001" },
-  penjual: { password: "penjual123", role: "seller", uid: "demo-002" },
-};
-
-function _isNetworkError(e) {
-  return (
-    e instanceof TypeError ||
-    e.message === "Failed to fetch" ||
-    e.message === "NetworkError when attempting to fetch resource." ||
-    e.message.toLowerCase().includes("network") ||
-    e.message.toLowerCase().includes("fetch")
-  );
-}
-
 async function doLogin() {
   clearErrs();
   const username = v("l-user"),
@@ -105,21 +89,9 @@ async function doLogin() {
     toast("Selamat datang, " + username + "!", "ok");
   } catch (e) {
     if (_isNetworkError(e)) {
-      /* ── Backend offline: try demo account fallback ── */
-      const demo = DEMO_ACCOUNTS[username.toLowerCase()];
-      if (demo && demo.password === password) {
-        S.role = demo.role;
-        saveAuth("demo-token-" + demo.uid, demo.uid, username);
-        enterApp();
-        toast(
-          "Mode Demo — Selamat datang, " + username + "! (server offline)",
-          "ok",
-        );
-        return;
-      }
       showErr(
         "login-err",
-        "Server tidak tersedia. Gunakan akun demo: pembeli / penjual",
+        "Server tidak tersedia. Pastikan semua service berjalan.",
       );
     } else {
       showErr("login-err", e.message);
@@ -183,7 +155,7 @@ function logout() {
   });
   sessionStorage.clear();
   S.role = "buyer";
-  document.body.classList.remove("app-ready");
+  document.body.classList.remove("app-ready", "buyer-mode");
   $id("topnav").classList.remove("vis");
   $id("bottom-nav").classList.remove("vis");
   document
@@ -212,6 +184,7 @@ function enterApp() {
     : "Akun";
 
   if (S.role === "seller") {
+    document.body.classList.remove("buyer-mode");
     $id("seller-badge").style.display = "";
     $id("cart-btn-top").style.display = "none";
     const wb = $id("wish-nav-btn");
@@ -225,6 +198,8 @@ function enterApp() {
     $id("orders-title").textContent = "Semua Pesanan";
     goPage("manage");
   } else {
+    document.body.classList.add("buyer-mode");
+    $id("bottom-nav").classList.add("vis"); // CSS controls visibility by screen size
     $id("seller-badge").style.display = "none";
     $id("cart-btn-top").style.display = "";
     const wb = $id("wish-nav-btn");
@@ -235,9 +210,11 @@ function enterApp() {
     $id("bn-cart").style.display = "";
     $id("orders-eyebrow").textContent = "Riwayat Belanja";
     $id("orders-title").textContent = "Pesanan Saya";
+    renderHeroBg();
     renderFlashSale();
     renderCategoryCards();
     startCountdown();
+    renderHeroFeatured();
     goPage("store");
   }
 }
@@ -260,8 +237,10 @@ function goPage(name) {
   if (bn) bn.classList.add("on");
   if (name === "store" || name === "manage") loadProducts();
   if (name === "store") {
+    renderHeroBg();
     renderFlashSale();
     renderCategoryCards();
+    renderHeroFeatured();
   }
   if (name === "orders") loadOrders();
 }

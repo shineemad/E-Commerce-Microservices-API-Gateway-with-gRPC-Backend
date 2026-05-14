@@ -2,6 +2,31 @@
    FEATURES.JS — Flash sale, categories, wishlist, detail modal & dashboard
 ══════════════════════════════════════════ */
 
+/* ── Hero Background Mosaic ── */
+// Foto latar dari Unsplash — gadget/tech vibes
+const HERO_BG_PHOTOS = [
+  "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&q=75&auto=format&fit=crop", // laptop open
+  "https://images.unsplash.com/photo-1591337676887-a217a6970a8a?w=600&q=75&auto=format&fit=crop", // phone in hand
+  "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=75&auto=format&fit=crop", // headphones
+  "https://images.unsplash.com/photo-1527814050087-3793815479db?w=600&q=75&auto=format&fit=crop", // mouse
+  "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&q=75&auto=format&fit=crop", // keyboard
+  "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=600&q=75&auto=format&fit=crop", // code/screen
+  "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=75&auto=format&fit=crop", // watch
+  "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&q=75&auto=format&fit=crop", // dark tech setup
+  "https://images.unsplash.com/photo-1496181091800-b9e8d6fd17a4?w=600&q=75&auto=format&fit=crop", // macbook
+];
+
+function renderHeroBg() {
+  const el = $id("sh-bg-mosaic");
+  if (!el) return;
+  // 9 tiles (first spans 2col×2row visually via CSS)
+  el.innerHTML = HERO_BG_PHOTOS.map((url, i) =>
+    '<div class="sh-bg-tile">' +
+    '<img src="' + url + '" alt="" loading="' + (i < 3 ? "eager" : "lazy") + '" decoding="async">' +
+    "</div>"
+  ).join("");
+}
+
 const FLASH_PRODUCTS = [
   { id: "dp-011", disc: 20 },
   { id: "dp-001", disc: 15 },
@@ -326,6 +351,57 @@ function addToCartQty(productId) {
   else S.cart.push({ product: p, qty: _detailQty });
   updateCartBadge();
   toast(p.name + " ×" + _detailQty + " ditambahkan ke keranjang", "ok");
+}
+
+/* ── Hero Featured Products (desktop panel) ── */
+function renderHeroFeatured() {
+  const el = $id("sh-featured");
+  if (!el) return;
+  const source = S.products.length ? S.products : DUMMY_PRODUCTS;
+  // Pick 3 products: prefer items with badge or image
+  const withBadge = source.filter((p) => p.badge);
+  const picks = [];
+  if (withBadge.length >= 3) {
+    picks.push(...withBadge.slice(0, 3));
+  } else {
+    picks.push(...withBadge);
+    for (const p of source) {
+      if (picks.length >= 3) break;
+      if (!picks.find((x) => x.id === p.id)) picks.push(p);
+    }
+  }
+  el.innerHTML = picks
+    .slice(0, 3)
+    .map((p) => {
+      const emoji =
+        smartEmoji(p.name) || ICONS[hash(p.id || p.name) % ICONS.length];
+      return (
+        '<div class="sh-feat-card" onclick="openProductDetail(\'' +
+        esc(p.id) +
+        "')\">" +
+        (p.badge
+          ? '<div class="sh-feat-badge">' + esc(p.badge) + "</div>"
+          : "") +
+        (p.image
+          ? '<img class="sh-feat-img" src="' +
+            esc(p.image) +
+            '" alt="' +
+            esc(p.name) +
+            '" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'">' +
+            '<div class="sh-feat-emoji" style="display:none">' +
+            emoji +
+            "</div>"
+          : '<div class="sh-feat-emoji">' + emoji + "</div>") +
+        '<div class="sh-feat-name">' +
+        esc(p.name) +
+        "</div>" +
+        '<div class="sh-feat-price">Rp\u00a0' +
+        fmt(p.price) +
+        "</div>" +
+        "</div>"
+      );
+    })
+    .join("");
 }
 
 /* ── Dashboard Stats (Seller) ── */

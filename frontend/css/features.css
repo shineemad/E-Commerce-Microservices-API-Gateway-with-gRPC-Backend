@@ -937,3 +937,117 @@
 #page-store {
   padding-top: 0;
 }
+
+/* ══════════════════════════════════════════════════
+   DESKTOP ENHANCEMENTS — Category & Flash Sale
+══════════════════════════════════════════════════ */
+
+/* Category cards: proper grid on desktop (not horizontal scroll) */
+@media (min-width: 900px) {
+  .cat-cards-section {
+    padding: 36px 48px;
+  }
+  .cat-cards-hdr {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .cat-cards-title {
+    font-size: 26px;
+  }
+  .cat-cards-grid {
+    display: grid !important;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+  .cat-visual-card {
+    width: auto;
+    padding: 28px 16px 22px;
+  }
+  .cat-vc-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+  .cat-vc-name {
+    font-size: 13px;
+  }
+  .cat-vc-count {
+    font-size: 11.5px;
+    margin-top: 5px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .cat-cards-section {
+    padding: 40px 56px;
+  }
+  .cat-cards-grid {
+    gap: 16px;
+  }
+  .cat-visual-card {
+    padding: 32px 20px 26px;
+  }
+  .cat-vc-icon {
+    font-size: 46px;
+  }
+}
+
+/* Flash sale: bigger cards, no scroll on large screens */
+@media (min-width: 900px) {
+  .flash-sale-section {
+    padding: 32px 48px 36px;
+  }
+  .flash-hdr {
+    margin-bottom: 24px;
+    flex-direction: row;
+    align-items: center;
+  }
+  .flash-badge {
+    font-size: 14px;
+    padding: 7px 16px;
+  }
+  .flash-card {
+    width: 192px;
+  }
+  .flash-card-visual {
+    height: 100px;
+    font-size: 44px;
+  }
+  .flash-card-name {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  .flash-price-disc {
+    font-size: 16px;
+  }
+  .flash-card-btn {
+    font-size: 13px;
+    padding: 9px 0;
+  }
+  .cd-num {
+    font-size: 26px;
+  }
+  .cd-unit {
+    min-width: 58px;
+    padding: 7px 10px;
+  }
+  .cd-lbl {
+    font-size: 10px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .flash-sale-section {
+    padding: 36px 56px 42px;
+  }
+  .flash-card {
+    width: 210px;
+  }
+  .flash-card-visual {
+    height: 112px;
+    font-size: 50px;
+  }
+}

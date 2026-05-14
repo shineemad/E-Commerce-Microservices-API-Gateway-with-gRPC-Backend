@@ -182,9 +182,11 @@ body:not(.app-ready) #bottom-nav {
   display: none !important;
 }
 
-@media (max-width: 768px) {
-  .bottom-nav.vis {
-    display: flex;
+/* Desktop: buyer bottom nav dikontrol oleh responsive.css (.buyer-mode) */
+/* Mobile: responsive.css meng-override display sesuai breakpoint */
+@media (min-width: 769px) {
+  body.buyer-mode .bottom-nav {
+    display: none !important;
   }
 }
 .bnav-item {
