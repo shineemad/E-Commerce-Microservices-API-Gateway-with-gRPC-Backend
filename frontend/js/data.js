@@ -39,8 +39,10 @@ const DUMMY_PRODUCTS = [
     reviews: "3.2k",
     sold: 2140,
     loc: "Jakarta",
-    image:
-      "https://images.unsplash.com/photo-1496181091800-b9e8d6fd17a4?w=400&q=80&auto=format&fit=crop",
+    stock: 42,
+    total_stock: 100,
+    // MacBook Air silver — close-up shot
+    image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8",
   },
   {
     id: "dp-002",
@@ -54,8 +56,10 @@ const DUMMY_PRODUCTS = [
     reviews: "1.8k",
     sold: 980,
     loc: "Bandung",
-    image:
-      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80&auto=format&fit=crop",
+    stock: 65,
+    total_stock: 150,
+    // Slim modern Android flagship — front view
+    image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8",
   },
   {
     id: "dp-003",
@@ -69,8 +73,10 @@ const DUMMY_PRODUCTS = [
     reviews: "4.1k",
     sold: 3200,
     loc: "Jakarta",
-    image:
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80&auto=format&fit=crop",
+    stock: 28,
+    total_stock: 200,
+    // Over-ear headphones on surface
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8",
   },
   {
     id: "dp-004",
@@ -84,8 +90,10 @@ const DUMMY_PRODUCTS = [
     reviews: "2.3k",
     sold: 1560,
     loc: "Surabaya",
-    image:
-      "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&q=80&auto=format&fit=crop",
+    stock: 87,
+    total_stock: 200,
+    // Wireless mouse on desk
+    image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8",
   },
   {
     id: "dp-005",
@@ -99,8 +107,10 @@ const DUMMY_PRODUCTS = [
     reviews: "1.5k",
     sold: 890,
     loc: "Bekasi",
-    image:
-      "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&q=80&auto=format&fit=crop",
+    stock: 4,
+    total_stock: 50,
+    // Mechanical keyboard with RGB
+    image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8",
   },
   {
     id: "dp-006",
@@ -114,8 +124,10 @@ const DUMMY_PRODUCTS = [
     reviews: "980",
     sold: 410,
     loc: "Depok",
-    image:
-      "https://images.unsplash.com/photo-1527443195645-1133f7f28990?w=400&q=80&auto=format&fit=crop",
+    stock: 15,
+    total_stock: 60,
+    // Gaming monitor curved/flat
+    image: "https://images.unsplash.com/photo-1547119957-637f8679db1e?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8",
   },
   {
     id: "dp-007",
@@ -129,8 +141,10 @@ const DUMMY_PRODUCTS = [
     reviews: "1.2k",
     sold: 740,
     loc: "Tangerang",
-    image:
-      "https://images.unsplash.com/photo-1580910051209-67fb48958b8a?w=400&q=80&auto=format&fit=crop",
+    stock: 53,
+    total_stock: 120,
+    // Samsung mid-range phone in hand
+    image: "https://images.unsplash.com/photo-1580910051209-67fb48958b8a?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8",
   },
   {
     id: "dp-008",
@@ -144,8 +158,10 @@ const DUMMY_PRODUCTS = [
     reviews: "5.6k",
     sold: 4100,
     loc: "Jakarta",
-    image:
-      "https://images.unsplash.com/photo-1590658268037-41402bb9e4d2?w=400&q=80&auto=format&fit=crop",
+    stock: 3,
+    total_stock: 80,
+    // AirPods Pro in charging case
+    image: "https://images.unsplash.com/photo-1590658268037-41402bb9e4d2?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8",
   },
   {
     id: "dp-009",
@@ -159,8 +175,10 @@ const DUMMY_PRODUCTS = [
     reviews: "2.7k",
     sold: 1890,
     loc: "Semarang",
-    image:
-      "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400&q=80&auto=format&fit=crop",
+    stock: 120,
+    total_stock: 300,
+    // External SSD / portable drive
+    image: "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8",
   },
   {
     id: "dp-010",
@@ -174,8 +192,10 @@ const DUMMY_PRODUCTS = [
     reviews: "1.9k",
     sold: 820,
     loc: "Medan",
-    image:
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80&auto=format&fit=crop",
+    stock: 31,
+    total_stock: 75,
+    // Smartwatch on white background
+    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8",
   },
   {
     id: "dp-011",
@@ -189,8 +209,10 @@ const DUMMY_PRODUCTS = [
     reviews: "890",
     sold: 320,
     loc: "Surabaya",
-    image:
-      "https://images.unsplash.com/photo-1541807084-5c52e6e76cf3?w=400&q=80&auto=format&fit=crop",
+    stock: 8,
+    total_stock: 30,
+    // Gaming laptop — ROG style
+    image: "https://images.unsplash.com/photo-1541807084-5c52e6e76cf3?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8",
   },
   {
     id: "dp-012",
@@ -204,8 +226,10 @@ const DUMMY_PRODUCTS = [
     reviews: "1.4k",
     sold: 1120,
     loc: "Jakarta",
-    image:
-      "https://images.unsplash.com/photo-1615750185825-7b70a9aadb1d?w=400&q=80&auto=format&fit=crop",
+    stock: 74,
+    total_stock: 150,
+    // Gaming mouse Razer style
+    image: "https://images.unsplash.com/photo-1615750185825-7b70a9aadb1d?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8",
   },
 ];
 
@@ -280,6 +304,104 @@ const LOCS = [
   "Medan",
 ];
 
-/* (FLASH_PRODUCTS defined in features.js)   */
-/* (CAT_VISUAL     defined in features.js)   */
-/* (ORDER_STEPS    defined in orders.js)      */
+/* ── Keyword-based fallback product images (matches KEYWORD_EMOJI logic) ── */
+const KEYWORD_IMAGE = [
+  // ── Specific models first (most specific → most generic) ──────────────────
+  // MacBook
+  [/(macbook air)/i,             "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  [/(macbook pro)/i,             "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  [/(macbook)/i,                 "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Gaming laptops
+  [/(zephyrus|rog|tuf gaming)/i, "https://images.unsplash.com/photo-1541807084-5c52e6e76cf3?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  [/(raider|predator|helios)/i,  "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Other laptops
+  [/(laptop|notebook|thinkpad|inspiron|envy|vivobook|ideapad)/i, "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Monitors
+  [/(ultragear|omen monitor|predator monitor)/i, "https://images.unsplash.com/photo-1547119957-637f8679db1e?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  [/(monitor|ultrasharp|ultrawide|display)/i,    "https://images.unsplash.com/photo-1547119957-637f8679db1e?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Samsung Galaxy S flagship
+  [/(galaxy s2[0-9]|galaxy s[0-9]+\s*ultra|galaxy s[0-9]+\s*plus)/i, "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Samsung Galaxy A mid-range
+  [/(galaxy a[0-9]+|galaxy m[0-9]+)/i, "https://images.unsplash.com/photo-1580910051209-67fb48958b8a?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Samsung generic
+  [/(samsung galaxy)/i,          "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // iPhone
+  [/(iphone\s*1[5-9]|iphone\s*pro)/i, "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  [/(iphone)/i,                  "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Xiaomi / Redmi
+  [/(xiaomi|redmi|poco|note [0-9]+)/i, "https://images.unsplash.com/photo-1591337676887-a217a6970a8a?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Oppo / Realme / Vivo
+  [/(oppo|realme|vivo)/i,        "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Generic phone
+  [/(phone|smartphone|hp android)/i, "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // AirPods / TWS earbuds
+  [/(airpods)/i,                 "https://images.unsplash.com/photo-1590658268037-41402bb9e4d2?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  [/(earbuds?|tws|buds|galaxy buds)/i, "https://images.unsplash.com/photo-1590658268037-41402bb9e4d2?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Over-ear headphones
+  [/(wh-1000|xm[34567]|over.?ear|headphone)/i, "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Gaming headset
+  [/(headset|kraken|blackshark|arctis)/i, "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Speaker
+  [/(speaker|soundbar|audio system)/i, "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Razer gaming mouse
+  [/(deathadder|razer naga|basilisk|viper)/i, "https://images.unsplash.com/photo-1615750185825-7b70a9aadb1d?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Logitech MX
+  [/(mx master|mx anywhere|g pro|g502|g403|g305)/i, "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Generic mouse
+  [/(mouse|tikus)/i,             "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Keyboard
+  [/(keychron|keyboard|mechanical|klaviatur)/i, "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // SSD / Storage
+  [/(ssd|nvme|t7|t5|x8|portable ssd|flash disk|flashdisk)/i, "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  [/(hard.?disk|hdd|external drive|storage)/i,               "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Smartwatch
+  [/(apple watch|galaxy watch|amazfit|garmin|fitbit)/i, "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  [/(smartwatch|jam tangan pintar|wearable)/i, "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Webcam / camera
+  [/(webcam|c920|brio|logitech cam)/i, "https://images.unsplash.com/photo-1616763355548-1b606f439f86?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  [/(kamera|camera|mirrorless|dslr)/i, "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Router / networking
+  [/(router|wifi|modem|tp-link|asus rt)/i, "https://images.unsplash.com/photo-1606904825846-647eb07f5be2?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Charger / cable / adapter
+  [/(charger|pengisi daya|kabel|cable|adaptor|power bank)/i, "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Printer
+  [/(printer|scanner|epson|canon printer)/i, "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // Bag / case
+  [/(tas laptop|laptop bag|sleeve|case laptop)/i, "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // RAM / Memory
+  [/(ram|ddr[45]|memory stick|sodimm)/i, "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+  // GPU
+  [/(gpu|rtx|gtx|radeon|graphics card)/i, "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8"],
+];
+
+const FALLBACK_IMAGES = [
+  "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8", // MacBook
+  "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8", // Samsung phone
+  "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8", // Headphones
+  "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8", // Mouse
+  "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8", // Keyboard
+  "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8", // SSD
+  "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8", // Smartwatch
+  "https://images.unsplash.com/photo-1541807084-5c52e6e76cf3?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8", // Gaming laptop
+  "https://images.unsplash.com/photo-1590658268037-41402bb9e4d2?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8", // AirPods
+  "https://images.unsplash.com/photo-1547119957-637f8679db1e?w=400&h=400&q=80&auto=format&fit=fill&fill-color=f8f8f8", // Monitor
+];
+
+/**
+ * Always returns a product image URL. Priority:
+ *   1. p.image_url (from API enrichment)
+ *   2. p.image (from dummy/merged data)
+ *   3. keyword match on product name
+ *   4. deterministic fallback from pool
+ */
+function productImage(p) {
+  if (p.image_url) return p.image_url;
+  if (p.image) return p.image;
+  const name = p.name || "";
+  for (const [re, url] of KEYWORD_IMAGE) {
+    if (re.test(name)) return url;
+  }
+  return FALLBACK_IMAGES[hash(p.id || p.name) % FALLBACK_IMAGES.length];
+}
+
+

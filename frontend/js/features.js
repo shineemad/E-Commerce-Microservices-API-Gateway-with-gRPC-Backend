@@ -20,10 +20,15 @@ function renderHeroBg() {
   const el = $id("sh-bg-mosaic");
   if (!el) return;
   // 9 tiles (first spans 2col×2row visually via CSS)
-  el.innerHTML = HERO_BG_PHOTOS.map((url, i) =>
-    '<div class="sh-bg-tile">' +
-    '<img src="' + url + '" alt="" loading="' + (i < 3 ? "eager" : "lazy") + '" decoding="async">' +
-    "</div>"
+  el.innerHTML = HERO_BG_PHOTOS.map(
+    (url, i) =>
+      '<div class="sh-bg-tile">' +
+      '<img src="' +
+      url +
+      '" alt="" loading="' +
+      (i < 3 ? "eager" : "lazy") +
+      '" decoding="async">' +
+      "</div>",
   ).join("");
 }
 
@@ -55,13 +60,13 @@ function renderFlashSale() {
       fp.disc +
       "%</div>" +
       '<div class="flash-card-visual">' +
-      (p.image
-        ? '<img class="flash-card-img" src="' +
-          esc(p.image) +
-          '" alt="' +
-          esc(p.name) +
-          '" loading="lazy" onerror="this.style.display=\'none\'">'
-        : emoji) +
+      '<img class="flash-card-img" src="' +
+      productImage(p) +
+      '" alt="' +
+      esc(p.name) +
+      '" loading="lazy" onerror="this.outerHTML=\'<div style=&quot;font-size:48px&quot;>' +
+      emoji +
+      "</div>'\">" +
       "</div>" +
       '<div class="flash-card-name">' +
       esc(p.name) +
@@ -207,6 +212,8 @@ function openProductDetail(productId) {
     DUMMY_PRODUCTS.find((x) => x.id === productId);
   if (!p) return;
   _detailQty = 1;
+  const _stock = p.stock != null ? p.stock : 999;
+  window._detailMaxStock = _stock;
   const emoji =
     smartEmoji(p.name) || ICONS[hash(p.id || p.name) % ICONS.length];
   const eb = EB[hash((p.name || "") + (p.id || "")) % EB.length];
@@ -266,13 +273,12 @@ function openProductDetail(productId) {
     '<div class="detail-visual-col ' +
     eb +
     '">' +
-    (p.image
-      ? '<img class="detail-visual-img" src="' +
-        esc(p.image) +
-        '" alt="' +
-        esc(p.name) +
-        '" loading="lazy" onerror="this.style.display=\'none\'">'
-      : '<div class="detail-visual-emoji">' + emoji + "</div>") +
+    '<img class="detail-visual-img" src="' +
+    productImage(p) +
+    '" alt="' +
+    esc(p.name) +
+    '" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+    '<div class="detail-visual-emoji" style="display:none">' + emoji + "</div>" +
     badgeHTML +
     "</div>" +
     '<div class="detail-info-col">' +
@@ -305,6 +311,15 @@ function openProductDetail(productId) {
     '<div class="detail-meta-item">📦 Terjual <strong>' +
     sold +
     "+</strong></div>" +
+    (_stock === 0
+      ? '<div class="detail-meta-item"><span class="stock-badge out-of-stock">Stok Habis</span></div>'
+      : _stock < 10
+        ? '<div class="detail-meta-item"><span class="stock-badge low-stock">Sisa ' +
+          _stock +
+          " tersisa</span></div>"
+        : '<div class="detail-meta-item">🏷️ Stok <strong>' +
+          _stock +
+          "</strong></div>") +
     "</div>" +
     '<div class="detail-qty-row">' +
     '<span class="detail-qty-label">Jumlah:</span>' +
@@ -336,9 +351,16 @@ function closeProductDetail() {
 }
 
 function changeDetailQty(d) {
-  _detailQty = Math.max(1, _detailQty + d);
+  const maxStock =
+    window._detailMaxStock != null ? window._detailMaxStock : 999;
+  _detailQty = Math.max(1, Math.min(maxStock, _detailQty + d));
   const el = $id("detail-qty-n");
   if (el) el.textContent = _detailQty;
+  // Disable + button if at max stock
+  const btns = document.querySelectorAll(".detail-qty-btn");
+  btns.forEach((btn) => {
+    if (btn.textContent === "+") btn.disabled = _detailQty >= maxStock;
+  });
 }
 
 function addToCartQty(productId) {

@@ -46,7 +46,7 @@ async function loadProducts() {
 
   // Show dummy products immediately for great visual first impression
   if (!S.products.length) {
-    S.products = DUMMY_PRODUCTS.map((p) => ({ ...p }));
+    S.products = DUMMY_PRODUCTS.map((p) => ({ ...p, image: productImage(p) }));
     updateProductCounts();
     if (isSeller) {
       renderManageProducts();
@@ -60,14 +60,17 @@ async function loadProducts() {
     const d = await api("GET", "/products");
     const apiProducts = d.products || [];
     if (apiProducts.length) {
-      // Enrich API products with dummy metadata where missing
+      // Enrich API products with dummy metadata where missing, then normalise image field.
       S.products = apiProducts.map((p) => {
         const dummy = DUMMY_PRODUCTS.find(
           (dp) =>
             dp.name.toLowerCase().slice(0, 6) ===
             (p.name || "").toLowerCase().slice(0, 6),
         );
-        return dummy ? { ...dummy, ...p } : p;
+        const merged = dummy ? { ...dummy, ...p } : p;
+        // Always guarantee merged.image is set using the productImage helper.
+        merged.image = productImage(merged);
+        return merged;
       });
       updateProductCounts();
       if (isSeller) {
@@ -79,7 +82,7 @@ async function loadProducts() {
   } catch (e) {
     // Dummy data is already showing — no need to show an error
     if (!S.products.length) {
-      S.products = DUMMY_PRODUCTS.map((p) => ({ ...p }));
+      S.products = DUMMY_PRODUCTS.map((p) => ({ ...p, image: productImage(p) }));
       updateProductCounts();
       if (isSeller) {
         renderManageProducts();
@@ -179,6 +182,15 @@ function renderProducts() {
         const rating =
           p.rating || RATINGS[hash(p.id || p.name) % RATINGS.length];
         const rCount = p.reviews || String(100 + (hash(p.id || p.name) % 1200));
+        // Stock indicator
+        const stock = p.stock != null ? p.stock : -1;
+        let stockBadge = "";
+        if (stock === 0) {
+          stockBadge = '<span class="stock-badge out-of-stock">Habis</span>';
+        } else if (stock > 0 && stock <= 5) {
+          stockBadge =
+            '<span class="stock-badge low-stock">Sisa ' + stock + "</span>";
+        }
         const badgeHTML = badge
           ? '<div class="prod-badge prod-badge--' +
             badge.toLowerCase().replace(/\s/g, "-") +
@@ -235,6 +247,7 @@ function renderProducts() {
           '<span class="prod-sold">Terjual ' +
           sold +
           "+</span>" +
+          stockBadge +
           '<span class="prod-loc">📍 ' +
           loc +
           "</span>" +
@@ -286,12 +299,19 @@ function renderReco() {
           "</div>"
         : "";
       return (
-        '<div class="reco-card">' +
+        '<div class="reco-card" onclick="openProductDetail(\'' +
+        esc(p.id) +
+        '\')" style="cursor:pointer">' +
         '<div class="reco-visual ' +
         eb +
-        '" style="position:relative">' +
+        '" style="position:relative;overflow:hidden">' +
         badgeHTML +
-        '<div class="prod-emoji">' +
+        '<img class="reco-img" src="' +
+        productImage(p) +
+        '" alt="' +
+        esc(p.name) +
+        '" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+        '<div class="prod-emoji" style="display:none">' +
         emoji +
         "</div>" +
         "</div>" +

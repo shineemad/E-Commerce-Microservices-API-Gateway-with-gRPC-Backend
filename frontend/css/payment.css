@@ -1,0 +1,343 @@
+/* ═══════════════════════════════════════════
+   PAYMENT.CSS — Payment modal & method styles
+═══════════════════════════════════════════ */
+
+/* ── Payment Modal Box ── */
+.pay-modal-box {
+  max-width: 480px;
+  width: 95vw;
+}
+
+/* ── Amount Block ── */
+.pay-amount-box {
+  text-align: center;
+  background: var(--bg-2, #f5f5f5);
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin-bottom: 16px;
+}
+.pay-amount-lbl {
+  font-size: 12px;
+  color: var(--txt-3, #888);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.pay-amount-val {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--txt-1, #111);
+  margin-top: 4px;
+}
+
+/* ── Countdown ── */
+.pay-countdown-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--txt-2, #555);
+  margin-bottom: 20px;
+}
+.pay-countdown {
+  font-weight: 700;
+  font-size: 15px;
+  color: #ef4444;
+  font-variant-numeric: tabular-nums;
+  background: #fef2f2;
+  border-radius: 6px;
+  padding: 2px 10px;
+}
+
+/* ── Method Selector ── */
+.pay-method-section {
+  margin-bottom: 20px;
+}
+.pay-method-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--txt-3, #888);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+.pay-method-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.pay-method-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 6px;
+  background: var(--bg-2, #f5f5f5);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--txt-2, #555);
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.pay-method-btn:hover {
+  background: var(--bg-3, #eee);
+}
+.pay-method-btn.active {
+  border-color: var(--accent, #111);
+  background: var(--bg-1, #fff);
+  color: var(--txt-1, #111);
+  font-weight: 600;
+}
+.pay-method-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+.pay-method-name {
+  font-size: 11px;
+}
+
+/* ── QRIS Box ── */
+.pay-qris-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  background: var(--bg-2, #f5f5f5);
+  border-radius: 12px;
+}
+.pay-qris-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--txt-1, #111);
+}
+.pay-qris-img {
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--border, #e5e5e5);
+}
+.pay-qris-note {
+  font-size: 11px;
+  color: var(--txt-3, #888);
+  text-align: center;
+  max-width: 260px;
+}
+
+/* ── Virtual Account Box ── */
+.pay-va-box {
+  padding: 16px;
+  background: var(--bg-2, #f5f5f5);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pay-va-bank {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--txt-1, #111);
+}
+.pay-va-label {
+  font-size: 11px;
+  color: var(--txt-3, #888);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.pay-va-number {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  font-variant-numeric: tabular-nums;
+  color: var(--txt-1, #111);
+  background: #fff;
+  border: 1px solid var(--border, #e5e5e5);
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: center;
+}
+.pay-va-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+.pay-va-step {
+  font-size: 12px;
+  color: var(--txt-2, #555);
+  padding-left: 4px;
+}
+
+/* ── E-Wallet Box ── */
+.pay-ewallet-box {
+  padding: 16px;
+  background: var(--bg-2, #f5f5f5);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.pay-ewallet-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px;
+}
+.pay-ewallet-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pay-ewallet-step {
+  font-size: 13px;
+  color: var(--txt-2, #555);
+}
+
+/* ── Top-Up / Saldo Box ── */
+.pay-topup-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 16px;
+  background: linear-gradient(135deg, #7c3aed22 0%, #4f46e522 100%);
+  border-radius: 12px;
+  border: 1px solid #7c3aed33;
+}
+.pay-topup-icon {
+  font-size: 36px;
+}
+.pay-topup-text {
+  font-size: 13px;
+  color: var(--txt-2, #555);
+  text-align: center;
+}
+.pay-topup-amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: #7c3aed;
+}
+
+/* ── Success screen ── */
+.pay-success-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 16px;
+  text-align: center;
+}
+.pay-success-icon {
+  font-size: 48px;
+}
+.pay-success-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--txt-1, #111);
+}
+.pay-success-sub {
+  font-size: 13px;
+  color: var(--txt-3, #888);
+}
+
+/* ── Stock indicator on product cards ── */
+.stock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 99px;
+  margin-left: 4px;
+}
+.stock-badge.in-stock {
+  background: #d1fae5;
+  color: #065f46;
+}
+.stock-badge.low-stock {
+  background: #fef3c7;
+  color: #92400e;
+}
+.stock-badge.out-of-stock {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ── Stock bar in manage card ── */
+.stock-bar-wrap {
+  margin-top: 6px;
+}
+.stock-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--txt-3, #888);
+  margin-bottom: 3px;
+}
+.stock-bar-track {
+  height: 4px;
+  background: var(--bg-3, #eee);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.stock-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+.stock-bar-fill.green {
+  background: #10b981;
+}
+.stock-bar-fill.yellow {
+  background: #f59e0b;
+}
+.stock-bar-fill.red {
+  background: #ef4444;
+}
+
+/* ── Manage form additions ── */
+.add-grid-ext {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+@media (max-width: 600px) {
+  .add-grid-ext {
+    grid-template-columns: 1fr;
+  }
+  .pay-method-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── Category select styling ── */
+.fg select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border, #e5e5e5);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--bg-1, #fff);
+  color: var(--txt-1, #111);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 34px;
+}
+.fg select:focus {
+  outline: none;
+  border-color: var(--accent, #111);
+}

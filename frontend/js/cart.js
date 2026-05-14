@@ -121,7 +121,9 @@ function openCheckout() {
   }
   closeCart();
   const total = S.cart.reduce((s, c) => s + c.product.price * c.qty, 0);
-  $id("modal-body").innerHTML =
+
+  // Order summary HTML
+  const summaryHTML =
     '<div class="order-summary">' +
     S.cart
       .map(
@@ -150,12 +152,21 @@ function openCheckout() {
     fmt(total) +
     "</div>" +
     "</div>";
+
+  // Payment method selector (defined in payment.js, loaded after cart.js)
+  const payMethodHTML =
+    typeof renderPaymentMethodSelector === "function"
+      ? renderPaymentMethodSelector()
+      : "";
+
+  $id("modal-body").innerHTML = summaryHTML + payMethodHTML;
   $id("modal-scrim").classList.add("vis");
 }
 function closeCheckout() {
   $id("modal-scrim").classList.remove("vis");
 }
 
+// placeOrder is kept for backward compat with tests; UI uses initiatePayment() from payment.js.
 async function placeOrder() {
   if (!S.cart.length) return;
   const btn = $id("place-btn");
