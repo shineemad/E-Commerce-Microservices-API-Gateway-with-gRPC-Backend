@@ -43,6 +43,7 @@
   display: flex;
   gap: 2px;
   flex: 1;
+  justify-content: center;
 }
 .navlink {
   padding: 8px 16px;

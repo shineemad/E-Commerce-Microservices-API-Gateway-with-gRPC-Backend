@@ -143,8 +143,14 @@
   animation: cs-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 @keyframes cs-pop {
-  from { opacity: 0; transform: scale(0.4); }
-  to   { opacity: 1; transform: scale(1);   }
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 .cs-title {
   font-family: var(--font-display);
@@ -170,8 +176,12 @@
   max-width: 320px;
   animation: fadeUp 0.35s 0.38s ease both;
 }
-.cs-stay-btn { flex: 1; }
-.cs-view-btn { flex: 1.5; }
+.cs-stay-btn {
+  flex: 1;
+}
+.cs-view-btn {
+  flex: 1.5;
+}
 
 /* ── Review Modal ── */
 .review-product-banner {

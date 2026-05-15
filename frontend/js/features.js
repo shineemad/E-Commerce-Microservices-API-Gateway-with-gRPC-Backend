@@ -2,34 +2,18 @@
    FEATURES.JS — Flash sale, categories, wishlist, detail modal & dashboard
 ══════════════════════════════════════════ */
 
-/* ── Hero Background Mosaic ── */
-// Foto latar dari Unsplash — gadget/tech vibes
-const HERO_BG_PHOTOS = [
-  "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&q=75&auto=format&fit=crop", // laptop open
-  "https://images.unsplash.com/photo-1591337676887-a217a6970a8a?w=600&q=75&auto=format&fit=crop", // phone in hand
-  "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=75&auto=format&fit=crop", // headphones
-  "https://images.unsplash.com/photo-1527814050087-3793815479db?w=600&q=75&auto=format&fit=crop", // mouse
-  "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&q=75&auto=format&fit=crop", // keyboard
-  "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=600&q=75&auto=format&fit=crop", // code/screen
-  "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=75&auto=format&fit=crop", // watch
-  "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&q=75&auto=format&fit=crop", // dark tech setup
-  "https://images.unsplash.com/photo-1496181091800-b9e8d6fd17a4?w=600&q=75&auto=format&fit=crop", // macbook
-];
+/* ── Hero Background — single cinematic laptop photo ── */
+// MacBook keyboard macro — cinematic dark aesthetic
+const HERO_BG_URL =
+  "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=1920&q=82&auto=format&fit=crop";
 
 function renderHeroBg() {
   const el = $id("sh-bg-mosaic");
   if (!el) return;
-  // 9 tiles (first spans 2col×2row visually via CSS)
-  el.innerHTML = HERO_BG_PHOTOS.map(
-    (url, i) =>
-      '<div class="sh-bg-tile">' +
-      '<img src="' +
-      url +
-      '" alt="" loading="' +
-      (i < 3 ? "eager" : "lazy") +
-      '" decoding="async">' +
-      "</div>",
-  ).join("");
+  el.innerHTML =
+    '<div class="sh-bg-tile">' +
+    '<img src="' + HERO_BG_URL + '" alt="" loading="eager" decoding="async" fetchpriority="high">' +
+    "</div>";
 }
 
 const FLASH_PRODUCTS = [
@@ -60,13 +44,13 @@ function renderFlashSale() {
       fp.disc +
       "%</div>" +
       '<div class="flash-card-visual">' +
-      (p.image
-        ? '<img class="flash-card-img" src="' +
-          esc(p.image) +
-          '" alt="' +
-          esc(p.name) +
-          '" loading="lazy" onerror="this.style.display=\'none\'">'
-        : emoji) +
+      '<img class="flash-card-img" src="' +
+      productImage(p) +
+      '" alt="' +
+      esc(p.name) +
+      '" loading="lazy" onerror="this.outerHTML=\'<div style=&quot;font-size:48px&quot;>' +
+      emoji +
+      "</div>'\">" +
       "</div>" +
       '<div class="flash-card-name">' +
       esc(p.name) +
@@ -212,6 +196,8 @@ function openProductDetail(productId) {
     DUMMY_PRODUCTS.find((x) => x.id === productId);
   if (!p) return;
   _detailQty = 1;
+  const _stock = p.stock != null ? p.stock : 999;
+  window._detailMaxStock = _stock;
   const emoji =
     smartEmoji(p.name) || ICONS[hash(p.id || p.name) % ICONS.length];
   const eb = EB[hash((p.name || "") + (p.id || "")) % EB.length];
@@ -271,13 +257,12 @@ function openProductDetail(productId) {
     '<div class="detail-visual-col ' +
     eb +
     '">' +
-    (p.image
-      ? '<img class="detail-visual-img" src="' +
-        esc(p.image) +
-        '" alt="' +
-        esc(p.name) +
-        '" loading="lazy" onerror="this.style.display=\'none\'">'
-      : '<div class="detail-visual-emoji">' + emoji + "</div>") +
+    '<img class="detail-visual-img" src="' +
+    productImage(p) +
+    '" alt="' +
+    esc(p.name) +
+    '" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+    '<div class="detail-visual-emoji" style="display:none">' + emoji + "</div>" +
     badgeHTML +
     "</div>" +
     '<div class="detail-info-col">' +
@@ -310,6 +295,15 @@ function openProductDetail(productId) {
     '<div class="detail-meta-item">📦 Terjual <strong>' +
     sold +
     "+</strong></div>" +
+    (_stock === 0
+      ? '<div class="detail-meta-item"><span class="stock-badge out-of-stock">Stok Habis</span></div>'
+      : _stock < 10
+        ? '<div class="detail-meta-item"><span class="stock-badge low-stock">Sisa ' +
+          _stock +
+          " tersisa</span></div>"
+        : '<div class="detail-meta-item">🏷️ Stok <strong>' +
+          _stock +
+          "</strong></div>") +
     "</div>" +
     '<div class="detail-qty-row">' +
     '<span class="detail-qty-label">Jumlah:</span>' +
@@ -341,9 +335,16 @@ function closeProductDetail() {
 }
 
 function changeDetailQty(d) {
-  _detailQty = Math.max(1, _detailQty + d);
+  const maxStock =
+    window._detailMaxStock != null ? window._detailMaxStock : 999;
+  _detailQty = Math.max(1, Math.min(maxStock, _detailQty + d));
   const el = $id("detail-qty-n");
   if (el) el.textContent = _detailQty;
+  // Disable + button if at max stock
+  const btns = document.querySelectorAll(".detail-qty-btn");
+  btns.forEach((btn) => {
+    if (btn.textContent === "+") btn.disabled = _detailQty >= maxStock;
+  });
 }
 
 function addToCartQty(productId) {

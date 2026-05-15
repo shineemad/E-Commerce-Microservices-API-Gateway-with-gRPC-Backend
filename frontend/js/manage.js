@@ -23,6 +23,12 @@ function renderManageProducts() {
         const rating =
           p.rating || RATINGS[hash(p.id || p.name) % RATINGS.length];
         const rCount = p.reviews || String(100 + (hash(p.id || p.name) % 1200));
+        const stock = p.stock != null ? p.stock : null;
+        const totalStock = p.total_stock || 0;
+        const stockPct =
+          totalStock > 0 ? Math.round((stock / totalStock) * 100) : 0;
+        const stockColor =
+          stockPct > 50 ? "green" : stockPct > 20 ? "yellow" : "red";
         const badgeHTML = badge
           ? '<div class="prod-badge prod-badge--' +
             badge.toLowerCase().replace(/\s/g, "-") +
@@ -30,6 +36,21 @@ function renderManageProducts() {
             esc(badge) +
             "</div>"
           : "";
+        const stockBarHTML =
+          stock != null
+            ? '<div class="stock-bar-wrap">' +
+              '<div class="stock-bar-label"><span>Stok</span><span>' +
+              stock +
+              " / " +
+              totalStock +
+              "</span></div>" +
+              '<div class="stock-bar-track"><div class="stock-bar-fill ' +
+              stockColor +
+              '" style="width:' +
+              stockPct +
+              '%"></div></div>' +
+              "</div>"
+            : "";
         return (
           '<div class="prod-card" style="animation-delay:' +
           i * 35 +
@@ -38,9 +59,13 @@ function renderManageProducts() {
           '<div class="prod-visual ' +
           eb +
           '">' +
-          '<div class="prod-emoji">' +
-          emoji +
-          "</div>" +
+          (p.image
+            ? '<img class="prod-img" src="' +
+              esc(p.image) +
+              '" alt="' +
+              esc(p.name) +
+              '" loading="lazy" onerror="this.style.display=\'none\'">'
+            : '<div class="prod-emoji">' + emoji + "</div>") +
           '<div class="prod-actions">' +
           '<button class="btn-icon" onclick="openEdit(\'' +
           esc(p.id) +
@@ -64,12 +89,13 @@ function renderManageProducts() {
           '<div class="prod-name">' +
           esc(p.name) +
           "</div>" +
-          '<div class="prod-price">$' +
+          '<div class="prod-price">Rp\u00a0' +
           fmt(p.price) +
           "</div>" +
           '<div class="prod-meta"><span class="prod-sold">Terjual ' +
           sold +
           "+</span></div>" +
+          stockBarHTML +
           '<div style="font-size:10px;color:var(--txt-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace;margin-top:6px">' +
           esc(p.id) +
           "</div>" +
@@ -84,16 +110,28 @@ function renderManageProducts() {
 async function doAddProduct() {
   const name = v("np-name"),
     price = parseFloat(v("np-price")) || 0,
-    description = v("np-desc");
+    description = v("np-desc"),
+    image_url = v("np-image"),
+    stock = parseInt($id("np-stock")?.value || "0") || 0,
+    category = $id("np-cat")?.value || "other";
   if (!name) {
     toast("Masukkan nama produk.", "err");
     return;
   }
   try {
-    await api("POST", "/products", { name, price, description });
+    await api("POST", "/products", {
+      name,
+      price,
+      description,
+      image_url,
+      stock,
+      total_stock: stock,
+      category,
+    });
     toast('"' + name + '" berhasil ditambahkan!', "ok");
-    ["np-name", "np-price", "np-desc"].forEach((x) => {
-      $id(x).value = "";
+    ["np-name", "np-price", "np-desc", "np-image", "np-stock"].forEach((x) => {
+      const el = $id(x);
+      if (el) el.value = "";
     });
     await loadProducts();
   } catch (e) {
@@ -108,6 +146,12 @@ function openEdit(productId) {
   $id("edit-name").value = p.name;
   $id("edit-price").value = p.price;
   $id("edit-desc").value = p.description || "";
+  const imgEl = $id("edit-image");
+  if (imgEl) imgEl.value = p.image_url || p.image || "";
+  const stockEl = $id("edit-stock");
+  if (stockEl) stockEl.value = p.stock != null ? p.stock : "";
+  const catEl = $id("edit-cat");
+  if (catEl) catEl.value = p.category || "other";
   $id("edit-scrim").classList.add("vis");
 }
 function closeEdit() {
@@ -119,11 +163,19 @@ async function doUpdateProduct() {
   const name = v("edit-name");
   const price = parseFloat($id("edit-price").value) || 0;
   const description = v("edit-desc");
+  const image_url = v("edit-image");
+  const stockVal = $id("edit-stock")?.value;
+  const stock = stockVal !== "" && stockVal != null ? parseInt(stockVal) : undefined;
+  const category = $id("edit-cat")?.value || "";
   if (!id) return;
   const btn = $id("edit-save-btn");
   setLoad(btn, true);
   try {
-    await api("PUT", "/products/" + id, { name, price, description });
+    const body = { name, price, description };
+    if (image_url) body.image_url = image_url;
+    if (stock !== undefined) body.stock = stock;
+    if (category) body.category = category;
+    await api("PUT", "/products/" + id, body);
     toast("Produk berhasil diperbarui!", "ok");
     closeEdit();
     await loadProducts();
@@ -144,4 +196,3 @@ async function doDeleteProduct(id, name) {
     toast(e.message, "err");
   }
 }
-

@@ -162,12 +162,12 @@ function closeCheckout() {
       '<div class="modal-hdr">' +
       '<div class="modal-ttl">Konfirmasi Pesanan</div>' +
       '<button class="close-btn" onclick="closeCheckout()">&#x2715;</button>' +
-      '</div>' +
+      "</div>" +
       '<div class="modal-body" id="modal-body"></div>' +
       '<div class="modal-foot">' +
       '<button class="btn btn-outline" style="flex:1" onclick="closeCheckout()">Batal</button>' +
       '<button class="btn btn-primary" style="flex:2" id="place-btn" onclick="placeOrder()">&#x2714; Buat Pesanan</button>' +
-      '</div>';
+      "</div>";
   }
 }
 
@@ -205,21 +205,25 @@ async function placeOrder() {
 
 function _showCheckoutSuccess(count) {
   const box = $id("modal-scrim").querySelector(".modal-box");
-  if (!box) { closeCheckout(); return; }
+  if (!box) {
+    closeCheckout();
+    return;
+  }
   box.innerHTML =
     '<div class="checkout-success">' +
     '<div class="cs-check">&#x2714;</div>' +
     '<div class="cs-title">Pesanan Berhasil!</div>' +
-    '<div class="cs-sub">' + count + ' produk telah dipesan dan menunggu konfirmasi toko.</div>' +
+    '<div class="cs-sub">' +
+    count +
+    " produk telah dipesan dan menunggu konfirmasi toko.</div>" +
     '<div class="cs-actions">' +
     '<button class="btn btn-outline cs-stay-btn" onclick="closeCheckout()">Lanjut Belanja</button>' +
     '<button class="btn btn-primary cs-view-btn" onclick="closeCheckout();goPage(\'orders\')">Lihat Pesanan &rarr;</button>' +
-    '</div>' +
-    '</div>';
+    "</div>" +
+    "</div>";
   // Auto-tutup setelah 3.5 detik jika user tidak klik
   clearTimeout(_checkoutSuccessTimer);
   _checkoutSuccessTimer = setTimeout(closeCheckout, 3500);
 }
 
 let _checkoutSuccessTimer = null;
-
