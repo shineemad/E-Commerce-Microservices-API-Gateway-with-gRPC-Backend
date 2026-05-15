@@ -20,10 +20,15 @@ function renderHeroBg() {
   const el = $id("sh-bg-mosaic");
   if (!el) return;
   // 9 tiles (first spans 2col×2row visually via CSS)
-  el.innerHTML = HERO_BG_PHOTOS.map((url, i) =>
-    '<div class="sh-bg-tile">' +
-    '<img src="' + url + '" alt="" loading="' + (i < 3 ? "eager" : "lazy") + '" decoding="async">' +
-    "</div>"
+  el.innerHTML = HERO_BG_PHOTOS.map(
+    (url, i) =>
+      '<div class="sh-bg-tile">' +
+      '<img src="' +
+      url +
+      '" alt="" loading="' +
+      (i < 3 ? "eager" : "lazy") +
+      '" decoding="async">' +
+      "</div>",
   ).join("");
 }
 

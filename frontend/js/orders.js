@@ -164,6 +164,19 @@ async function loadOrders() {
               "')\">&#x2714; Konfirmasi Pesanan Diterima</button>" +
               "</div>"
             : "") +
+          // Tombol batalkan pesanan — hanya muncul saat status=pending (belum diproses toko)
+          (S.role !== "seller" && o.status === "pending"
+            ? '<div class="order-cancel-row">' +
+              '<button class="btn btn-cancel-order"' +
+              ' data-cancel-id="' +
+              esc(o.id) +
+              '"' +
+              ' data-cancel-name="' +
+              esc(productName) +
+              '">' +
+              "&#x2716; Batalkan Pesanan</button>" +
+              "</div>"
+            : "") +
           // Tampilkan review yang sudah dikirim
           (S.role !== "seller" && _reviews[o.id]
             ? '<div class="order-review-done">' +
@@ -187,6 +200,7 @@ async function loadOrders() {
         );
       })
       .join("");
+    _setupCancelDelegation();
   } catch (e) {
     el.innerHTML = emptyHTML(
       "\u26A0\uFE0F",
@@ -194,6 +208,19 @@ async function loadOrders() {
       esc(e.message),
     );
   }
+}
+
+// Event delegation untuk tombol batalkan — lebih andal dari inline onclick
+function _setupCancelDelegation() {
+  const el = $id("orders-area");
+  if (!el || el._cancelReady) return;
+  el._cancelReady = true;
+  el.addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-cancel-id]");
+    if (!btn) return;
+    e.stopPropagation();
+    openCancelConfirm(btn.dataset.cancelId, btn.dataset.cancelName);
+  });
 }
 
 async function doUpdateStatus(orderId, newStatus) {
@@ -302,9 +329,55 @@ function closeReview() {
   };
 }
 
+// ── Cancel Order ──────────────────────────────────────────────────
+
+let _cancelState = { orderId: null, productName: null };
+
+function openCancelConfirm(orderId, productName) {
+  _cancelState = { orderId, productName };
+  $id("cancel-modal-meta").innerHTML =
+    '<div class="cancel-meta-row">' +
+    '<span class="cancel-meta-lbl">Produk</span>' +
+    '<span class="cancel-meta-val">' +
+    esc(productName) +
+    "</span>" +
+    "</div>" +
+    '<div class="cancel-meta-row">' +
+    '<span class="cancel-meta-lbl">ID Pesanan</span>' +
+    '<span class="cancel-meta-val mono">' +
+    esc(orderId) +
+    "</span>" +
+    "</div>";
+  $id("cancel-scrim").classList.add("vis");
+}
+
+function closeCancelConfirm() {
+  $id("cancel-scrim").classList.remove("vis");
+  _cancelState = { orderId: null, productName: null };
+}
+
+async function confirmCancelOrder() {
+  const { orderId } = _cancelState;
+  if (!orderId) return;
+  const btn = $id("cancel-confirm-btn");
+  setLoad(btn, true);
+  try {
+    await api("PATCH", "/orders/" + orderId + "/status", {
+      status: "cancelled",
+    });
+    toast("Pesanan berhasil dibatalkan.", "ok");
+    closeCancelConfirm();
+    loadOrders();
+  } catch (e) {
+    toast("Gagal membatalkan: " + e.message, "err");
+  }
+  setLoad(btn, false, "✖ Batalkan Pesanan");
+}
+
 // ── Order steps ───────────────────────────────────────────────────
 
 const ORDER_STEPS = [
+  { key: "pending", label: "Menunggu" },
   { key: "processing", label: "Diproses" },
   { key: "shipped", label: "Dikirim" },
   { key: "delivered", label: "Diterima" },
@@ -312,10 +385,17 @@ const ORDER_STEPS = [
 ];
 
 function orderTimelineHTML(status) {
-  const currentIdx = ORDER_STEPS.findIndex((s) => s.key === status);
-  if (currentIdx < 0 || status === "cancelled") {
-    return '<div style="font-size:12px;color:var(--accent-red);font-weight:600;padding:8px 0">⚠️ Pesanan dibatalkan</div>';
+  // Cancelled: tampilkan pesan khusus, bukan timeline
+  if (status === "cancelled") {
+    return (
+      '<div class="order-cancelled-notice">' +
+      '<span class="ocn-icon">&#x2716;</span>' +
+      "<span>Pesanan dibatalkan</span>" +
+      "</div>"
+    );
   }
+  const currentIdx = ORDER_STEPS.findIndex((s) => s.key === status);
+  if (currentIdx < 0) return "";
   return (
     '<div class="order-status-timeline">' +
     ORDER_STEPS.map((step, i) => {

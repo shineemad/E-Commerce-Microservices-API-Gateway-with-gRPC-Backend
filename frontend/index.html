@@ -427,7 +427,7 @@
         <div class="sh-bg-overlay" aria-hidden="true"></div>
         <div class="sh-content">
           <div class="sh-eyebrow">🔥 Lebih dari 500 SKU Tersedia</div>
-          <div class="sh-title">Gadget Terbaik,<br>Harga Terjangkau</div>
+          <div class="sh-title">Gadget Terbaik,<br />Harga Terjangkau</div>
           <div class="sh-sub">
             Laptop, smartphone, audio &amp; aksesori teknologi terkini —
             original &amp; bergaransi resmi
@@ -1198,6 +1198,42 @@
             onclick="placeOrder()"
           >
             &#x2714; Buat Pesanan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CANCEL ORDER MODAL — konfirmasi pembatalan pesanan (status pending) -->
+    <div class="modal-scrim" id="cancel-scrim" onclick="closeCancelConfirm()">
+      <div class="modal-box cancel-modal-box" onclick="event.stopPropagation()">
+        <div class="cancel-modal-icon-wrap" aria-hidden="true">
+          <div class="cancel-modal-icon">&#x26A0;&#xFE0F;</div>
+        </div>
+        <div class="cancel-modal-content">
+          <div class="cancel-modal-ttl">Batalkan Pesanan?</div>
+          <div class="cancel-modal-desc">
+            Pesanan ini akan segera dibatalkan.<br />Tindakan ini
+            <strong>tidak dapat dipulihkan</strong>.
+          </div>
+          <div class="cancel-modal-meta" id="cancel-modal-meta">
+            <!-- diisi JS: nama produk + ID pesanan -->
+          </div>
+        </div>
+        <div class="cancel-modal-foot">
+          <button
+            class="btn btn-outline"
+            style="flex: 1"
+            onclick="closeCancelConfirm()"
+          >
+            Kembali
+          </button>
+          <button
+            class="btn btn-cancel-destructive"
+            style="flex: 1.3"
+            id="cancel-confirm-btn"
+            onclick="confirmCancelOrder()"
+          >
+            &#x2716; Batalkan Pesanan
           </button>
         </div>
       </div>

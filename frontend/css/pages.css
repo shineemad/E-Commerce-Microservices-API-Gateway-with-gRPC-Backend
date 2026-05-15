@@ -419,6 +419,54 @@
   transform: translateY(-1px);
 }
 
+/* Tombol batalkan pesanan — tampil hanya saat status pending */
+.order-cancel-row {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #fecaca;
+}
+.btn-cancel-order {
+  width: 100%;
+  background: transparent;
+  color: var(--accent-red);
+  border: 1.5px solid #fca5a5;
+  border-radius: var(--r-pill);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.1s;
+  font-family: var(--font-body);
+  letter-spacing: 0.01em;
+}
+.btn-cancel-order:hover {
+  background: #fef2f2;
+  border-color: var(--accent-red);
+  transform: translateY(-1px);
+}
+
+/* Badge pesanan dibatalkan di timeline area */
+.order-cancelled-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 10px 0 4px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent-red);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--r-pill);
+  padding: 5px 14px;
+}
+.ocn-icon {
+  font-size: 10px;
+}
+
 /* Review yang sudah dikirim di dalam order card */
 .order-review-done {
   margin-top: 12px;
