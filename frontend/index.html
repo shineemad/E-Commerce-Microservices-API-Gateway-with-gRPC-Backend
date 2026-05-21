@@ -21,7 +21,6 @@
     <link rel="stylesheet" href="./css/modals.css" />
     <link rel="stylesheet" href="./css/responsive.css" />
     <link rel="stylesheet" href="./css/features.css" />
-    <link rel="stylesheet" href="./css/payment.css" />
   </head>
   <body>
     <!-- TOP NAV -->
@@ -421,14 +420,9 @@
       </div>
 
       <!-- Hero banner -->
-      <div class="store-hero" id="store-hero">
-        <!-- Background photo mosaic — diisi JS -->
-        <div class="sh-bg-mosaic" id="sh-bg-mosaic" aria-hidden="true"></div>
-        <!-- Gradient overlay -->
-        <div class="sh-bg-overlay" aria-hidden="true"></div>
+      <div class="store-hero">
         <div class="sh-content">
-          <div class="sh-eyebrow">🔥 Lebih dari 500 SKU Tersedia</div>
-          <div class="sh-title">Gadget Terbaik,<br />Harga Terjangkau</div>
+          <div class="sh-title">Gadget Terbaik, Harga Terjangkau</div>
           <div class="sh-sub">
             Laptop, smartphone, audio &amp; aksesori teknologi terkini —
             original &amp; bergaransi resmi
@@ -1026,34 +1020,13 @@
               ><input id="np-name" placeholder="Contoh: Laptop Gaming ROG" />
             </div>
             <div class="fg">
-              <label>Harga (Rp)</label
+              <label>Harga (USD)</label
               ><input
                 id="np-price"
                 type="number"
-                placeholder="0"
-                step="1000"
+                placeholder="0.00"
+                step="0.01"
               />
-            </div>
-            <div class="fg">
-              <label>URL Gambar</label
-              ><input id="np-image" placeholder="https://images.unsplash.com/..." />
-            </div>
-            <div class="fg">
-              <label>Stok Awal</label
-              ><input id="np-stock" type="number" placeholder="100" min="0" />
-            </div>
-            <div class="fg">
-              <label>Kategori</label>
-              <select id="np-cat">
-                <option value="other">— Pilih Kategori —</option>
-                <option value="laptop">Laptop &amp; Monitor</option>
-                <option value="phone">Smartphone</option>
-                <option value="audio">Audio</option>
-                <option value="peripheral">Peripheral</option>
-                <option value="storage">Storage</option>
-                <option value="wearable">Wearable</option>
-                <option value="other">Lainnya</option>
-              </select>
             </div>
             <div class="fg add-desc">
               <label>Deskripsi</label
@@ -1217,45 +1190,9 @@
             class="btn btn-primary"
             style="flex: 2"
             id="place-btn"
-            onclick="initiatePayment()"
+            onclick="placeOrder()"
           >
-            💳 Bayar Sekarang
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- CANCEL ORDER MODAL — konfirmasi pembatalan pesanan (status pending) -->
-    <div class="modal-scrim" id="cancel-scrim" onclick="closeCancelConfirm()">
-      <div class="modal-box cancel-modal-box" onclick="event.stopPropagation()">
-        <div class="cancel-modal-icon-wrap" aria-hidden="true">
-          <div class="cancel-modal-icon">&#x26A0;&#xFE0F;</div>
-        </div>
-        <div class="cancel-modal-content">
-          <div class="cancel-modal-ttl">Batalkan Pesanan?</div>
-          <div class="cancel-modal-desc">
-            Pesanan ini akan segera dibatalkan.<br />Tindakan ini
-            <strong>tidak dapat dipulihkan</strong>.
-          </div>
-          <div class="cancel-modal-meta" id="cancel-modal-meta">
-            <!-- diisi JS: nama produk + ID pesanan -->
-          </div>
-        </div>
-        <div class="cancel-modal-foot">
-          <button
-            class="btn btn-outline"
-            style="flex: 1"
-            onclick="closeCancelConfirm()"
-          >
-            Kembali
-          </button>
-          <button
-            class="btn btn-cancel-destructive"
-            style="flex: 1.3"
-            id="cancel-confirm-btn"
-            onclick="confirmCancelOrder()"
-          >
-            &#x2716; Batalkan Pesanan
+            &#x2714; Buat Pesanan
           </button>
         </div>
       </div>
@@ -1306,36 +1243,13 @@
               ><input id="edit-name" placeholder="Nama produk" />
             </div>
             <div class="fg">
-              <label>Harga (Rp)</label
+              <label>Harga (USD)</label
               ><input
                 id="edit-price"
                 type="number"
-                placeholder="0"
-                step="1000"
+                placeholder="0.00"
+                step="0.01"
               />
-            </div>
-          </div>
-          <div class="fg">
-            <label>URL Gambar</label
-            ><input id="edit-image" placeholder="https://images.unsplash.com/..." />
-          </div>
-          <div class="edit-grid">
-            <div class="fg">
-              <label>Stok</label
-              ><input id="edit-stock" type="number" placeholder="Stok tersedia" min="0" />
-            </div>
-            <div class="fg">
-              <label>Kategori</label>
-              <select id="edit-cat">
-                <option value="other">— Pilih —</option>
-                <option value="laptop">Laptop &amp; Monitor</option>
-                <option value="phone">Smartphone</option>
-                <option value="audio">Audio</option>
-                <option value="peripheral">Peripheral</option>
-                <option value="storage">Storage</option>
-                <option value="wearable">Wearable</option>
-                <option value="other">Lainnya</option>
-              </select>
             </div>
           </div>
           <div class="fg">
@@ -1371,25 +1285,10 @@
       </div>
     </div>
 
-    <!-- PAYMENT MODAL -->
-    <div class="modal-scrim" id="pay-scrim">
-      <div class="modal-box pay-modal-box">
-        <div class="modal-hdr">
-          <div class="modal-ttl" id="pay-modal-title">Pembayaran</div>
-          <button class="close-btn" onclick="closePayment()">&#x2715;</button>
-        </div>
-        <div class="modal-body" id="pay-modal-body"></div>
-        <div class="modal-foot">
-          <button class="btn btn-outline" style="flex:1" onclick="closePayment()">Batal</button>
-          <button class="btn btn-primary" style="flex:2" id="pay-confirm-btn" onclick="confirmPayment()">&#x2714; Konfirmasi Sudah Bayar</button>
-        </div>
-      </div>
-    </div>
-
     <!-- TOASTS -->
     <div id="toasts" class="toast-stack"></div>
 
-    <!-- JS — split files (load order matters: data → utils → auth → products → manage → cart → orders → features → payment) -->
+    <!-- JS — split files (load order matters: data → utils → auth → products → manage → cart → orders → features) -->
     <script src="./js/data.js"></script>
     <script src="./js/utils.js"></script>
     <script src="./js/auth.js"></script>
@@ -1398,6 +1297,5 @@
     <script src="./js/cart.js"></script>
     <script src="./js/orders.js"></script>
     <script src="./js/features.js"></script>
-    <script src="./js/payment.js"></script>
   </body>
 </html>
